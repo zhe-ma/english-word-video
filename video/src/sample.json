@@ -1,0 +1,25 @@
+{
+  "meta": { "id": "000", "series": "一分钟情景单词", "level": "CET-4", "theme": "减肥第三天" },
+  "layout": {},
+  "fps": 30,
+  "durationInFrames": 690,
+  "reading": { "start": 0.6, "end": 17.8 },
+  "summary": { "start": 18.3, "end": 23.0 },
+  "sentences": [
+    { "start": 0.6, "end": 4.0, "tokens": [{ "t": "周一我定了严格的" }, { "w": 0 }, { "t": "，发誓" }, { "w": 1 }, { "t": "所有零食。" }] },
+    { "start": 4.35, "end": 7.9, "tokens": [{ "t": "第三天同事递来奶茶，我的" }, { "w": 2 }, { "t": "当场" }, { "w": 3 }, { "t": "。" }] },
+    { "start": 8.25, "end": 10.9, "tokens": [{ "t": "我安慰自己：适当" }, { "w": 4 }, { "t": "也是" }, { "w": 5 }, { "t": "。" }] },
+    { "start": 11.25, "end": 14.6, "tokens": [{ "t": "结果站上" }, { "w": 6 }, { "t": "，数字给了最诚实的" }, { "w": 7 }, { "t": "。" }] },
+    { "start": 14.95, "end": 17.8, "tokens": [{ "t": "减肥这件事，嘴永远比腿先放弃。" }] }
+  ],
+  "words": [
+    { "word": "schedule", "ipa": "/ˈʃedjuːl/", "syllables": "sched · ule", "pos": "n.", "meaning": "日程表，计划", "color": "yellow", "start": 2.1, "end": 2.7 },
+    { "word": "eliminate", "ipa": "/ɪˈlɪmɪneɪt/", "syllables": "elim · i · nate", "pos": "v.", "meaning": "消除", "color": "green", "start": 3.1, "end": 3.7 },
+    { "word": "determination", "ipa": "/dɪˌtɜːmɪˈneɪʃn/", "syllables": "de · ter · mi · na · tion", "pos": "n.", "meaning": "决心", "color": "pink", "start": 6.2, "end": 7.0 },
+    { "word": "collapse", "ipa": "/kəˈlæps/", "syllables": "col · lapse", "pos": "v.", "meaning": "崩溃，倒塌", "color": "blue", "start": 7.3, "end": 7.9 },
+    { "word": "reward", "ipa": "/rɪˈwɔːd/", "syllables": "re · ward", "pos": "n.", "meaning": "奖励", "color": "yellow", "start": 9.4, "end": 9.9 },
+    { "word": "strategy", "ipa": "/ˈstrætədʒi/", "syllables": "strat · e · gy", "pos": "n.", "meaning": "策略", "color": "green", "start": 10.2, "end": 10.9 },
+    { "word": "scale", "ipa": "/skeɪl/", "syllables": "scale", "pos": "n.", "meaning": "秤；规模", "color": "pink", "start": 11.9, "end": 12.4 },
+    { "word": "feedback", "ipa": "/ˈfiːdbæk/", "syllables": "feed · back", "pos": "n.", "meaning": "反馈", "color": "blue", "start": 13.9, "end": 14.6 }
+  ]
+}

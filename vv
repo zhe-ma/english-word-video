@@ -1,0 +1,4 @@
+#!/bin/bash
+# 流水线命令入口：./vv <command> ...
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "$ROOT" && exec "$ROOT/.venv/bin/python" -m pipeline.cli "$@"

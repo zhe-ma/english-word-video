@@ -1,0 +1,37 @@
+# 系统 / 编辑器
+.DS_Store
+__pycache__/
+*.pyc
+
+# 依赖（scripts/setup.sh 自动安装）
+.venv/
+video/node_modules/
+
+# 大文件（scripts/setup.sh 自动下载 / 生成）
+data/ecdict.csv
+data/ecdict.db
+video/public/fonts/
+
+# 学习进度数据库：跨机器迁移时手动拷贝（见 DEPLOY.md）
+data/progress.db
+
+# 缓存和临时文件
+.cache/
+*.part
+
+# 渲染产物（每期只提交 plan.json / drafts.md / script.json 等文本）
+video/public/episodes/
+video/out/
+episodes/*/audio.wav
+episodes/*/voice.wav
+episodes/*/out.mp4
+episodes/*/cover.png
+episodes/*/frames/
+episodes/*/props.json
+episodes/*/timeline.json
+episodes/*/report.json
+episodes/*/qa_audio.json
+
+# 参考样本视频（第三方内容，不入库）
+*.MP4
+*.mp4

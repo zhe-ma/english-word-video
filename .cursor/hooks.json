@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      { "command": ".cursor/hooks/validate-script.sh", "timeout": 30 }
+    ]
+  }
+}

@@ -1,0 +1,63 @@
+# 选题库：每期挑一个没用过的（vv plan 会列出最近几期），也可以结合当周节日和热点临时加。
+# genre 只是建议，写稿时可以换。
+打工:
+  - {theme: 周一早高峰, genre: 吐槽小剧场}
+  - {theme: 无效会议, genre: 吐槽小剧场}
+  - {theme: 周五下午四点半, genre: 吐槽小剧场}
+  - {theme: 老板说“简单改一下”, genre: 灵魂拷问对话}
+  - {theme: 年终总结, genre: 伪官方通知}
+  - {theme: 带薪摸鱼, genre: 说明书体}
+  - {theme: 团建, genre: 朋友圈 vs 现实}
+  - {theme: 裸辞第一天, genre: 反鸡汤}
+  - {theme: 工位上的绿萝, genre: 拟人视角}
+校园:
+  - {theme: 考试周, genre: 吐槽小剧场}
+  - {theme: 小组作业, genre: 吐槽小剧场}
+  - {theme: 早八, genre: 反鸡汤}
+  - {theme: 图书馆占座, genre: 伪新闻}
+  - {theme: 毕业论文查重, genre: 伪官方通知}
+  - {theme: 宿舍夜聊, genre: 灵魂拷问对话}
+  - {theme: 食堂阿姨的手, genre: 伪新闻}
+生活:
+  - {theme: 减肥第三天, genre: 吐槽小剧场}
+  - {theme: 健身卡, genre: 反鸡汤}
+  - {theme: 租房看房, genre: 灵魂拷问对话}
+  - {theme: 合租室友, genre: 说明书体}
+  - {theme: 外卖选择困难症, genre: 吐槽小剧场}
+  - {theme: 第一次下厨, genre: 菜谱体}
+  - {theme: 早睡计划, genre: 反鸡汤}
+  - {theme: 手机只剩 1% 电, genre: 伪新闻}
+  - {theme: 快递驿站, genre: 吐槽小剧场}
+  - {theme: 洗衣机里的纸巾, genre: 伪新闻}
+家庭:
+  - {theme: 妈妈的灵魂拷问, genre: 灵魂拷问对话}
+  - {theme: 过年被问工资, genre: 灵魂拷问对话}
+  - {theme: 给爸妈教智能手机, genre: 吐槽小剧场}
+  - {theme: 家族群的养生文章, genre: 伪新闻}
+  - {theme: 回家第三天, genre: 反鸡汤}
+宠物:
+  - {theme: 猫主子的一天, genre: 拟人视角}
+  - {theme: 狗子拆家, genre: 伪新闻}
+  - {theme: 猫的体检报告, genre: 伪官方通知}
+  - {theme: 扫地机器人的独白, genre: 拟人视角}
+社交恋爱:
+  - {theme: 相亲, genre: 灵魂拷问对话}
+  - {theme: 已读不回, genre: 吐槽小剧场}
+  - {theme: 朋友圈三天可见, genre: 朋友圈 vs 现实}
+  - {theme: 聚会 AA, genre: 吐槽小剧场}
+  - {theme: 社恐接电话, genre: 吐槽小剧场}
+消费:
+  - {theme: 双十一, genre: 伪官方通知}
+  - {theme: 直播间抢购, genre: 伪新闻}
+  - {theme: 会员自动续费, genre: 伪官方通知}
+  - {theme: 网购实物与图片, genre: 朋友圈 vs 现实}
+出行:
+  - {theme: 国庆出游, genre: 朋友圈 vs 现实}
+  - {theme: 春运抢票, genre: 伪新闻}
+  - {theme: 导航说“前方掉头”, genre: 拟人视角}
+  - {theme: 网红打卡点, genre: 朋友圈 vs 现实}
+节日季节:
+  - {theme: 中秋月饼, genre: 伪官方通知}
+  - {theme: 新年 flag, genre: 反鸡汤}
+  - {theme: 夏天的空调遥控器, genre: 伪新闻}
+  - {theme: 秋天第一杯奶茶, genre: 吐槽小剧场}

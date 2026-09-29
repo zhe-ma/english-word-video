@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>荧光笔手帐 · 设计稿</title>
+<style>
+  :root {
+    --paper: #FFFBF2;
+    --ink: #1F1B16;
+    --ink-dim: rgba(31, 27, 22, .32);
+    --grid: rgba(120, 100, 70, .09);
+    --bg: #2B2A33;
+    --hl-yellow: #FFE45C;
+    --hl-green: #9EF0B0;
+    --hl-pink: #FFB3D1;
+    --hl-blue: #A9D8FF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #111; display: flex; gap: 40px; padding: 40px;
+    font-family: "PingFang SC", "Noto Sans SC", "Source Han Sans SC", sans-serif;
+  }
+  .viewport { width: 432px; height: 768px; overflow: hidden; border-radius: 16px; flex: none; }
+  .frame {
+    width: 1080px; height: 1920px; transform: scale(.4); transform-origin: 0 0;
+    background: var(--bg); position: relative; color: var(--ink);
+  }
+
+  /* 顶部 */
+  .top { position: absolute; left: 72px; right: 72px; top: 90px; color: #fff; }
+  .series { display: flex; align-items: center; gap: 20px; font-size: 30px; font-weight: 600; opacity: .9; }
+  .vol { background: #fff; color: var(--bg); border-radius: 12px; padding: 4px 16px; font-weight: 800; }
+  .theme { font-size: 64px; font-weight: 900; margin-top: 18px; letter-spacing: 2px; }
+  .progress { display: flex; gap: 14px; margin-top: 24px; }
+  .progress i { width: 56px; height: 12px; border-radius: 6px; background: rgba(255,255,255,.18); }
+  .progress i.on { background: var(--c); }
+
+  /* 纸张卡片 */
+  .paper {
+    position: absolute; left: 56px; right: 56px; top: 600px; height: 920px;
+    background:
+      linear-gradient(var(--grid) 2px, transparent 2px) 0 0 / 100% 64px,
+      linear-gradient(90deg, var(--grid) 2px, transparent 2px) 0 0 / 64px 100%,
+      var(--paper);
+    border-radius: 28px; padding: 80px 52px 48px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.35);
+    transform: rotate(-.6deg);
+  }
+  .tape {
+    position: absolute; top: -26px; left: 50%; width: 220px; height: 56px; margin-left: -110px;
+    background: rgba(255, 228, 92, .75); transform: rotate(2deg); border-radius: 4px;
+  }
+  .text { font-size: 42px; line-height: 118px; font-weight: 700; }
+  .s { color: var(--ink-dim); }
+  .s.done, .s.cur { color: var(--ink); }
+  .w { position: relative; display: inline-block; padding: 0 6px; font-family: "Poppins", "Inter", "Helvetica Neue", sans-serif; font-weight: 800; }
+  .w::before {           /* 荧光笔笔触 */
+    content: ""; position: absolute; left: -4px; right: -4px; top: 48%; height: 44%;
+    background: var(--c); border-radius: 10px 4px 12px 6px; transform: rotate(-1.5deg) scaleX(var(--p, 0));
+    transform-origin: left center; z-index: -1;
+  }
+  .w { z-index: 0; }
+  .w.todo { border-bottom: 5px dashed rgba(31,27,22,.25); line-height: 1.1; }
+  .w .tag {             /* 释义挂在单词上方 */
+    position: absolute; left: 50%; bottom: 100%; transform: translate(-50%, 4px);
+    white-space: nowrap; font-size: 22px; line-height: 1; font-weight: 700;
+    font-family: "PingFang SC", sans-serif;
+    background: var(--ink); color: #fff; padding: 8px 12px; border-radius: 10px;
+  }
+
+  /* 底部聚焦词卡 */
+  .focus {
+    position: absolute; left: 72px; right: 72px; top: 340px; height: 220px;
+    background: #fff; border-radius: 32px; padding: 40px 48px; display: flex; gap: 40px; align-items: center;
+    border-left: 20px solid var(--c);
+  }
+  .focus .big { font-family: "Poppins", "Helvetica Neue", sans-serif; font-size: 76px; font-weight: 900; line-height: 1; }
+  .focus .syl { font-size: 30px; color: #8a8378; margin-top: 16px; letter-spacing: 2px; }
+  .focus .right { margin-left: auto; text-align: right; }
+  .focus .ipa { font-size: 36px; color: #5d574e; }
+  .focus .mean { font-size: 44px; font-weight: 800; margin-top: 18px; }
+  .wave { display: flex; gap: 6px; align-items: center; height: 40px; margin-top: 18px; justify-content: flex-end; }
+  .wave b { width: 6px; background: var(--c); border-radius: 3px; }
+
+  /* 汇总页 */
+  .sum-title { position: absolute; left: 72px; top: 150px; color: #fff; }
+  .sum-title h1 { font-size: 84px; font-weight: 900; }
+  .sum-title p { font-size: 34px; opacity: .7; margin-top: 16px; }
+  .grid { position: absolute; left: 56px; right: 56px; top: 420px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .card {
+    background: var(--paper); border-radius: 28px; padding: 34px 34px 30px; height: 250px; position: relative; overflow: hidden;
+  }
+  .card::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 14px; background: var(--c); }
+  .card .no { position: absolute; right: 24px; bottom: 16px; font-size: 56px; font-weight: 900; color: rgba(31,27,22,.07); font-family: "Poppins", sans-serif; }
+  .card .en { font-family: "Poppins", "Helvetica Neue", sans-serif; font-size: 50px; font-weight: 900; }
+  .card .ipa { font-size: 28px; color: #7a7367; margin-top: 10px; }
+  .card .cn { font-size: 34px; font-weight: 800; margin-top: 26px; }
+  .card .cn em { font-style: normal; background: var(--c); padding: 2px 10px; border-radius: 8px; margin-right: 10px; font-size: 26px; }
+  .hint { position: absolute; left: 0; right: 0; bottom: 110px; text-align: center; color: #fff; font-size: 34px; opacity: .75; }
+</style>
+</head>
+<body>
+
+<!-- 场景 1：朗读页（第 3 句读到 collapse） -->
+<div class="viewport"><div class="frame">
+  <div class="top">
+    <div class="series"><span class="vol">Vol.012</span>一分钟情景单词 · CET-4</div>
+    <div class="theme">减肥第三天</div>
+    <div class="progress">
+      <i class="on" style="--c:var(--hl-yellow)"></i><i class="on" style="--c:var(--hl-green)"></i>
+      <i class="on" style="--c:var(--hl-pink)"></i><i class="on" style="--c:var(--hl-blue)"></i>
+      <i class="on" style="--c:var(--hl-yellow)"></i><i></i><i></i><i></i>
+    </div>
+  </div>
+
+  <div class="paper">
+    <div class="tape"></div>
+    <p class="text">
+      <span class="s done">周一我定了严格的 <span class="w" style="--c:var(--hl-yellow);--p:1"><span class="tag">n. 日程表</span>schedule</span>，发誓 <span class="w" style="--c:var(--hl-green);--p:1"><span class="tag">v. 消除</span>eliminate</span> 所有零食。</span>
+      <span class="s done">第三天同事递来奶茶，我的 <span class="w" style="--c:var(--hl-pink);--p:1"><span class="tag">n. 决心</span>determination</span> 当场 </span><span class="s cur"><span class="w" style="--c:var(--hl-blue);--p:.6"><span class="tag">v. 崩溃，倒塌</span>collapse</span>。</span>
+      <span class="s">我安慰自己：适当 <span class="w todo" style="--c:var(--hl-yellow)">reward</span> 也是 <span class="w todo" style="--c:var(--hl-green)">strategy</span>。</span>
+      <span class="s">结果站上 <span class="w todo" style="--c:var(--hl-pink)">scale</span>，数字给了最诚实的 <span class="w todo" style="--c:var(--hl-blue)">feedback</span>。</span>
+      <span class="s">减肥这件事，嘴永远比腿先放弃。</span>
+    </p>
+  </div>
+
+  <div class="focus" style="--c:var(--hl-blue)">
+    <div>
+      <div class="big">collapse</div>
+      <div class="syl">col · lapse</div>
+    </div>
+    <div class="right">
+      <div class="ipa">/kəˈlæps/</div>
+      <div class="mean">v. 崩溃，倒塌</div>
+      <div class="wave">
+        <b style="height:14px"></b><b style="height:26px"></b><b style="height:38px"></b><b style="height:22px"></b>
+        <b style="height:32px"></b><b style="height:16px"></b><b style="height:28px"></b><b style="height:12px"></b>
+      </div>
+    </div>
+  </div>
+  <div class="hint" style="bottom:260px">读完还剩 3 个词 · 看到最后有词卡</div>
+</div></div>
+
+<!-- 场景 2：单词汇总页 -->
+<div class="viewport"><div class="frame">
+  <div class="sum-title">
+    <h1>今日词卡 · 8</h1>
+    <p>Vol.012 减肥第三天 · CET-4</p>
+  </div>
+  <div class="grid">
+    <div class="card" style="--c:var(--hl-yellow)"><span class="no">01</span><div class="en">schedule</div><div class="ipa">/ˈʃedjuːl/</div><div class="cn"><em>n.</em>日程表，计划</div></div>
+    <div class="card" style="--c:var(--hl-green)"><span class="no">02</span><div class="en">eliminate</div><div class="ipa">/ɪˈlɪmɪneɪt/</div><div class="cn"><em>v.</em>消除，淘汰</div></div>
+    <div class="card" style="--c:var(--hl-pink)"><span class="no">03</span><div class="en">determination</div><div class="ipa">/dɪˌtɜːmɪˈneɪʃn/</div><div class="cn"><em>n.</em>决心</div></div>
+    <div class="card" style="--c:var(--hl-blue)"><span class="no">04</span><div class="en">collapse</div><div class="ipa">/kəˈlæps/</div><div class="cn"><em>v.</em>崩溃，倒塌</div></div>
+    <div class="card" style="--c:var(--hl-yellow)"><span class="no">05</span><div class="en">reward</div><div class="ipa">/rɪˈwɔːd/</div><div class="cn"><em>n.</em>奖励</div></div>
+    <div class="card" style="--c:var(--hl-green)"><span class="no">06</span><div class="en">strategy</div><div class="ipa">/ˈstrætədʒi/</div><div class="cn"><em>n.</em>策略</div></div>
+    <div class="card" style="--c:var(--hl-pink)"><span class="no">07</span><div class="en">scale</div><div class="ipa">/skeɪl/</div><div class="cn"><em>n.</em>秤；规模</div></div>
+    <div class="card" style="--c:var(--hl-blue)"><span class="no">08</span><div class="en">feedback</div><div class="ipa">/ˈfiːdbæk/</div><div class="cn"><em>n.</em>反馈</div></div>
+  </div>
+  <div class="hint">截图收藏 · 评论区默写打卡</div>
+</div></div>
+
+</body>
+</html>
