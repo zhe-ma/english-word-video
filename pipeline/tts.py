@@ -109,19 +109,57 @@ def map_words(tokens, marks, dur):
     return out
 
 
+def script_hash(s):
+    """只算影响画面和配音的字段，改评审分之类不会让 timeline 过期。"""
+    key = json.dumps([s.get("sentences"), s.get("words"), s.get("layout"), s.get("theme"), s.get("level")],
+                     ensure_ascii=False, sort_keys=True)
+    return hashlib.sha1(key.encode()).hexdigest()[:12]
+
+
+def estimate_duration(tokens):
+    """不配音时估算一句的朗读时长（按 +5% 语速的晓晓大致校准）。"""
+    hanzi = sum(len(re.findall(r"[\u4e00-\u9fff]", tk.get("t", ""))) for tk in tokens)
+    sylls = sum(syllable_count(tk["w"]) for tk in tokens if "w" in tk)
+    return 0.3 + hanzi * 0.235 + sylls * 0.24
+
+
 def run(ep, voice=VOICE, rate=RATE):
     d = ep_dir(ep)
     s = load(ep)
-    lex = lexicon.connect()
 
+    def synth(tokens):
+        wav, marks = synth_cached(sentence_text(tokens, tts=True), voice, rate)
+        data = read_pcm(wav)
+        return data, len(data) / 2 / SR, marks
+
+    timeline, pcm = assemble(s, synth, voice, rate)
+    voice_wav = d / "voice.wav"
+    write_pcm(voice_wav, pcm)
+    mix(voice_wav, d / "audio.wav")
+    save_json(d / "timeline.json", timeline)
+    words = timeline["words"]
+    interp = [w["word"] for w in words if w["source"] == "interp"]
+    reading = timeline["reading"]["end"] - timeline["reading"]["start"]
+    print(f"配音完成：朗读 {reading:.1f}s，视频总长 {timeline['summary']['end']:.1f}s → {d}/audio.wav")
+    print(f"单词时间来自 WordBoundary：{len(words) - len(interp)}/{len(words)}"
+          + (f"，插值兜底：{', '.join(interp)}" if interp else ""))
+
+
+def estimate(s):
+    """不联网、不出音频，按字数估算时间轴，给工作台实时预览用。"""
+    timeline, _ = assemble(s, lambda tokens: (b"", estimate_duration(tokens), []), "", "")
+    timeline["estimated"] = True
+    return timeline
+
+
+def assemble(s, synth, voice, rate):
+    """synth(tokens) -> (pcm, 时长, WordBoundary 列表)。返回 (timeline, 完整 pcm)。"""
+    lex = lexicon.connect()
     pcm = bytearray(silence(LEAD_IN))
     t = LEAD_IN
     sentences, word_times = [], []
     for i, tokens in enumerate(s["sentences"]):
-        text = sentence_text(tokens, tts=True)
-        wav, marks = synth_cached(text, voice, rate)
-        data = read_pcm(wav)
-        dur = len(data) / 2 / SR
+        data, dur, marks = synth(tokens)
         times = map_words(tokens, marks, dur)
         out_tokens, k = [], 0
         for tk in tokens:
@@ -144,16 +182,12 @@ def run(ep, voice=VOICE, rate=RATE):
     summary_end = summary_start + 0.8 + 0.08 * len(s["words"]) + SUMMARY_HOLD
     pcm += silence(summary_end - t)
 
-    voice_wav = d / "voice.wav"
-    write_pcm(voice_wav, bytes(pcm))
-    mix(voice_wav, d / "audio.wav")
-
     words = []
     for i, (w, tm) in enumerate(zip(s["words"], word_times)):
         row = lexicon.lookup(lex, w["word"])
         words.append({
             "word": w["word"], "ipa": lexicon.ipa(row), "syllables": syllables(w["word"]),
-            "pos": w["pos"], "meaning": w["meaning"], "color": COLORS[i % len(COLORS)],
+            "pos": w.get("pos", ""), "meaning": w.get("meaning", ""), "color": COLORS[i % len(COLORS)],
             "review": bool(w.get("review")), **tm,
         })
 
@@ -167,12 +201,9 @@ def run(ep, voice=VOICE, rate=RATE):
         "sentences": sentences,
         "words": words,
         "voice": voice, "rate": rate,
+        "scriptHash": script_hash(s),
     }
-    save_json(d / "timeline.json", timeline)
-    interp = [w["word"] for w in words if w["source"] == "interp"]
-    print(f"配音完成：朗读 {reading_end - LEAD_IN:.1f}s，视频总长 {summary_end:.1f}s → {d}/audio.wav")
-    print(f"单词时间来自 WordBoundary：{len(words) - len(interp)}/{len(words)}"
-          + (f"，插值兜底：{', '.join(interp)}" if interp else ""))
+    return timeline, bytes(pcm)
 
 
 def mix(voice_wav, out_wav):

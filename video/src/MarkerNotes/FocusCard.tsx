@@ -1,5 +1,6 @@
 import { useAudioData, visualizeAudio } from "@remotion/media-utils";
-import { spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { resolveMedia } from "../media";
 import { C, EN, HL, ZH } from "../theme";
 import type { Word } from "../types";
 
@@ -41,7 +42,7 @@ export const FocusCard: React.FC<{ words: Word[]; total: number; audioSrc?: stri
           <div style={{ fontFamily: ZH, fontSize: 42, fontWeight: 800, marginTop: 14, color: C.ink }}>
             {w.pos} {w.meaning}
           </div>
-          {audioSrc ? <Wave src={staticFile(audioSrc)} color={HL[w.color]} /> : null}
+          {audioSrc ? <Wave src={resolveMedia(audioSrc) ?? audioSrc} color={HL[w.color]} /> : null}
         </div>
       </div>
     </div>

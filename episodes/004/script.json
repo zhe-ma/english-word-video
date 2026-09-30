@@ -1,0 +1,108 @@
+{
+  "id": "004",
+  "series": "一分钟情景单词",
+  "level": "CET-4",
+  "theme": "周一早高峰",
+  "genre": "吐槽小剧场",
+  "sentences": [
+    [
+      {
+        "t": "周一早高峰又来了，我还在"
+      },
+      {
+        "w": "weekly"
+      },
+      {
+        "t": "。"
+      }
+    ],
+    [
+      {
+        "t": "眼前一堆"
+      },
+      {
+        "w": "military"
+      },
+      {
+        "t": "，旁边的人一直"
+      },
+      {
+        "w": "source"
+      },
+      {
+        "t": "另一边。"
+      }
+    ],
+    [
+      {
+        "t": "我来回"
+      },
+      {
+        "w": "realize"
+      },
+      {
+        "t": "，身体已经开始"
+      },
+      {
+        "w": "behavior"
+      },
+      {
+        "t": "。"
+      }
+    ],
+    [
+      {
+        "t": "最后我"
+      },
+      {
+        "w": "factor"
+      },
+      {
+        "t": "了眼前这个。"
+      }
+    ],
+    [
+      {
+        "t": "结果和上次一模一样。"
+      }
+    ]
+  ],
+  "words": [
+    {
+      "word": "weekly",
+      "pos": "n.",
+      "meaning": "周刊",
+      "review": false
+    },
+    {
+      "word": "military",
+      "pos": "n.",
+      "meaning": "军队",
+      "review": false
+    },
+    {
+      "word": "source",
+      "pos": "n.",
+      "meaning": "来源",
+      "review": false
+    },
+    {
+      "word": "realize",
+      "pos": "vt.",
+      "meaning": "了解",
+      "review": false
+    },
+    {
+      "word": "behavior",
+      "pos": "n.",
+      "meaning": "行为",
+      "review": false
+    },
+    {
+      "word": "factor",
+      "pos": "n.",
+      "meaning": "因素",
+      "review": false
+    }
+  ]
+}

@@ -9,8 +9,8 @@ from .script import ep_dir, full_text, hanzi_count, load, save_json, sentence_te
 ALLOWED_POS = {"n.", "v.", "vt.", "vi.", "adj.", "a."}
 
 
-def check(ep):
-    s = load(ep)
+def check(ep, script=None):
+    s = load(ep) if script is None else script
     errors, warnings = [], []
     E, W = errors.append, warnings.append
 
@@ -59,8 +59,7 @@ def check(ep):
         E(f"单词数 {len(listed)}，要求 {WORDS_RANGE[0]}–{WORDS_RANGE[1]}")
 
     lex = lexicon.connect()
-    pcon = progress.connect()
-    used = progress.used_words(pcon)
+    used = progress.used_words(exclude=s["id"])
     level_key = next((k for k, v in LEVELS.items() if v["label"] == s["level"]), None)
     n_review = 0
     for w in words:
@@ -102,9 +101,7 @@ def check(ep):
                 E(f"命中黑名单：{p}")
 
     # 去重
-    for r in progress.recent_episodes(pcon):
-        if r["id"] == s["id"]:
-            continue
+    for r in progress.recent_episodes(exclude=s["id"]):
         if r["theme"] == s["theme"]:
             E(f"主题和第 {r['id']} 期重复：{r['theme']}")
         if r["ending"] and r["ending"] == ending:
@@ -129,16 +126,19 @@ def check(ep):
     return s, errors, warnings
 
 
+def build_report(ep, script=None):
+    s, errors, warnings = check(ep, script)
+    return {"ok": not errors, "errors": errors, "warnings": warnings,
+            "hanzi": hanzi_count(full_text(s)) if "sentences" in s else None,
+            "text": full_text(s) if "sentences" in s else None}
+
+
 def run(ep):
-    s, errors, warnings = check(ep)
-    report = {"ok": not errors, "errors": errors, "warnings": warnings,
-              "hanzi": hanzi_count(full_text(s)) if "sentences" in s else None,
-              "text": full_text(s) if "sentences" in s else None}
+    report = build_report(ep)
     save_json(ep_dir(ep) / "report.json", report)
-    status = "通过" if not errors else "未通过"
-    print(f"第 {s.get('id', ep)} 期校验{status}（汉字 {report['hanzi']}）")
-    for e in errors:
+    print(f"第 {ep_dir(ep).name} 期校验{'通过' if report['ok'] else '未通过'}（汉字 {report['hanzi']}）")
+    for e in report["errors"]:
         print(f"  ✗ {e}")
-    for w in warnings:
+    for w in report["warnings"]:
         print(f"  ! {w}")
-    return 0 if not errors else 1
+    return 0 if report["ok"] else 1

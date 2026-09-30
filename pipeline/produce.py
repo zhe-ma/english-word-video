@@ -5,7 +5,7 @@ import subprocess
 
 from . import media, progress, validate
 from .config import EPISODES, READING_RANGE, VIDEO
-from .script import ep_dir, full_text, load, save_json, sentence_text
+from .script import ep_dir, load, save_json
 
 
 def load_timeline(d):
@@ -97,38 +97,47 @@ def commit(ep):
     if not (d / "out.mp4").exists():
         raise SystemExit("还没有成片 out.mp4")
     s = load(ep)
-    ending = sentence_text(s["sentences"][-1])
-    con = progress.connect()
-    progress.commit(con, s, ending)
-    progress.append_published(s, full_text(s))
-    print(f"第 {s['id']} 期已入库：{len(s['words'])} 个词写入学习记录，文案追加到 data/published_scripts.md")
+    progress.commit(d, s)
+    print(f"第 {d.name} 期已入库（published_at={s['published_at']}），已重新生成 data/published_scripts.md")
+
+
+def steps(d):
+    """一期目录已完成的步骤。"""
+    out = []
+    if (d / "plan.json").exists():
+        out.append("plan")
+    if (d / "drafts.md").exists():
+        out.append("drafts")
+    script = None
+    if (d / "script.json").exists():
+        out.append("script")
+        try:
+            script = json.loads((d / "script.json").read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            pass
+    rp = d / "report.json"
+    if rp.exists() and json.loads(rp.read_text(encoding="utf-8")).get("ok"):
+        out.append("valid")
+    if (d / "timeline.json").exists():
+        out.append("tts")
+    qa = d / "qa_audio.json"
+    if qa.exists() and json.loads(qa.read_text(encoding="utf-8")).get("ok"):
+        out.append("qa")
+    if (d / "out.mp4").exists():
+        out.append("video")
+    if (d / "frames").exists():
+        out.append("frames")
+    if script and script.get("published_at"):
+        out.append("committed")
+    return out, script
 
 
 def status():
-    con = progress.connect()
-    committed = {r["id"] for r in con.execute("SELECT id FROM episodes WHERE status='committed'")}
     if not EPISODES.exists():
         print("还没有任何一期")
         return
     print(f"{'期号':<6}{'主题':<14}{'状态'}")
     for d in sorted(p for p in EPISODES.iterdir() if p.is_dir()):
-        steps = []
-        if (d / "plan.json").exists():
-            steps.append("plan")
-        if (d / "script.json").exists():
-            steps.append("script")
-        rp = d / "report.json"
-        if rp.exists() and json.loads(rp.read_text())["ok"]:
-            steps.append("valid")
-        if (d / "timeline.json").exists():
-            steps.append("tts")
-        if (d / "out.mp4").exists():
-            steps.append("video")
-        if d.name in committed:
-            steps.append("committed")
-        theme = ""
-        if (d / "script.json").exists():
-            theme = json.loads((d / "script.json").read_text()).get("theme", "")
-        print(f"{d.name:<6}{theme:<14}{' → '.join(steps)}")
-    n = con.execute("SELECT COUNT(DISTINCT word) FROM word_usage").fetchone()[0]
-    print(f"\n已学单词 {n} 个，已入库 {len(committed)} 期")
+        st, script = steps(d)
+        print(f"{d.name:<6}{(script or {}).get('theme', ''):<14}{' → '.join(st)}")
+    print(f"\n已学单词 {len(progress.used_words())} 个，已入库 {len(progress.published())} 期")

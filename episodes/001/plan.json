@@ -208,5 +208,13 @@
     }
   ],
   "review_due": [],
-  "recent": []
+  "recent": [],
+  "picked": [
+    "hesitate",
+    "option",
+    "recommend",
+    "switch",
+    "complain",
+    "select"
+  ]
 }

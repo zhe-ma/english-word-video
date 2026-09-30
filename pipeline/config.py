@@ -4,11 +4,11 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 EPISODES = ROOT / "episodes"
 VIDEO = ROOT / "video"
+WORKBENCH = ROOT / "workbench"
 CACHE = ROOT / ".cache"
 
 ECDICT_CSV = DATA / "ecdict.csv"
 ECDICT_DB = DATA / "ecdict.db"
-PROGRESS_DB = DATA / "progress.db"
 BANNED = DATA / "banned_phrases.txt"
 PUBLISHED = DATA / "published_scripts.md"
 

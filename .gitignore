@@ -6,14 +6,13 @@ __pycache__/
 # 依赖（scripts/setup.sh 自动安装）
 .venv/
 video/node_modules/
+workbench/node_modules/
 
 # 大文件（scripts/setup.sh 自动下载 / 生成）
 data/ecdict.csv
 data/ecdict.db
 video/public/fonts/
-
-# 学习进度数据库：跨机器迁移时手动拷贝（见 DEPLOY.md）
-data/progress.db
+workbench/dist/
 
 # 缓存和临时文件
 .cache/

@@ -64,6 +64,9 @@ say "Python 虚拟环境（.venv）"
 say "Remotion 依赖（video/node_modules）"
 (cd video && npm ci --no-audit --no-fund)
 
+say "工作台依赖（workbench/node_modules）"
+(cd workbench && npm ci --no-audit --no-fund)
+
 say "下载 ECDICT 词库"
 mkdir -p data
 fetch "$GH_RAW/skywind3000/ECDICT/master/ecdict.csv" data/ecdict.csv 60000000
@@ -97,4 +100,4 @@ if [[ $CHECK -eq 1 ]]; then
   fi
 fi
 
-say "安装完成。用 Cursor 打开本目录，对 Agent 说：做 1 期 CET-4 单词视频"
+say "安装完成。启动工作台：./vv serve　　或对 Agent 说：做 1 期 CET-4 单词视频"

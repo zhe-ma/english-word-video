@@ -1,28 +1,29 @@
 # 部署文档：荧光笔手帐单词视频工作流
 
 本文说明如何在一台新机器上部署这条工作流，并在 Cursor 里一句话生产单词视频。
-工作流设计见 `中英混读单词视频-技术调研.md`，日常命令见 `AGENTS.md`。
+工作流设计见 `docs/中英混读单词视频-技术调研.md`，日常命令见 `AGENTS.md`。工作台：`./vv serve`。
 
 ---
 
 ## 1. 工作流概览
 
 ```
-Cursor Agent（按 .cursor/skills/vocab-video 执行）
+Cursor Agent 或工作台（./vv serve）
   ├─ ./vv plan / words        选题、查词（ECDICT 词库）
   ├─ 写 drafts.md → 毒舌评审子代理打分 → script.json
   ├─ ./vv validate            规则校验（Hook 在改完 script.json 后自动触发）
-  ├─ ./vv tts / qa-audio      edge-tts 逐句配音 + 单词时间戳 → timeline.json
-  ├─ ./vv render / frames     Remotion 渲染 out.mp4，抽帧给 Agent 看图质检
-  └─ ./vv commit              写入学习进度，文案归档
+  ├─ ./vv tts / qa-audio      edge-tts 逐句配音（可选音色 / 语速）→ timeline.json
+  ├─ ./vv render / frames     Remotion 渲染 out.mp4，抽帧质检
+  └─ ./vv commit              script.json 写 published_at，重写 published_scripts.md
 ```
 
 | 组件 | 技术 | 位置 |
 |---|---|---|
-| 流水线 CLI | Python 3.10+（edge-tts、pyphen） | `pipeline/`，入口 `./vv` |
+| 流水线 CLI / API | Python 3.10+（edge-tts、pyphen） | `pipeline/`，入口 `./vv` |
+| 工作台 | Vite + React | `workbench/`，`./vv serve` |
 | 视频模板 | Remotion 4 + React 18（Node 18+） | `video/` |
-| 词库 | ECDICT（MIT） | `data/ecdict.csv` → `data/ecdict.db` |
-| 学习进度 | SQLite | `data/progress.db` |
+| 词库 | ECDICT（MIT） | `data/ecdict.csv` → `data/ecdict.db`（本机缓存，不进 git） |
+| 学习进度 | 已入库的 `episodes/*/script.json` | 有 `published_at` 即入库 |
 | Agent 配置 | Cursor Skill / Rule / Hook | `.cursor/`、`AGENTS.md` |
 | 字体 | 思源黑体 Noto Sans SC、Poppins（OFL） | `video/public/fonts/` |
 
@@ -188,19 +189,18 @@ cursor-agent -p "按 vocab-video skill 做 3 期 CET-4 单词视频，主题从 
 
 | 文件 | 内容 | 是否在 git 里 | 迁移方式 |
 |---|---|---|---|
-| `data/progress.db` | 已用单词、期号、复习调度 | 否 | **手动拷贝**到新机器同一路径 |
-| `data/published_scripts.md` | 已发布文案（去重用） | 是 | 随仓库同步 |
+| `data/published_scripts.md` | 由 commit 根据 script.json 重写 | 是 | 派生文件，冲突以 script.json 为准 |
 | `data/themes.yaml`、`hall_of_fame.md`、`banned_phrases.txt` | 选题库、范文、黑名单 | 是 | 随仓库同步 |
-| `episodes/<id>/plan.json`、`drafts.md`、`script.json` | 每期文本 | 是 | 随仓库同步 |
-| `episodes/<id>/audio.wav`、`out.mp4`、`cover.png` 等 | 每期产物 | 否 | 需要时拷贝，或在新机器执行 `./vv tts` + `./vv render` 重新生成 |
-| `data/ecdict.db` | 词库 | 否 | 执行 `./vv init-db` 重建 |
+| `episodes/<id>/plan.json`、`drafts.md`、`script.json` | 每期文本；入库后 script 带 `published_at` | 是 | 随仓库同步，这就是进度源 |
+| `episodes/<id>/audio.wav`、`out.mp4`、`cover.png` 等 | 每期产物 | 否 | 需要时拷贝，或本机 `./vv tts` + `./vv render` |
+| `data/ecdict.db` | 词库查询缓存 | 否 | `./vv init-db` 重建 |
 
-**多台机器同时生产时**：`progress.db` 不能自动合并，建议只在一台机器上执行 `./vv commit`；其他机器生成的 `episodes/<id>/` 通过 git 同步过来，再统一 commit。期号由 `progress.db` 和现有 `episodes/` 目录共同决定，同步后再执行 `plan` 可以避免期号冲突。
+**多台机器同时生产时**：只同步文本。期号看 `episodes/` 目录，已用词看各期 `published_at`。两台机器不要同时 `plan` 同一期号。
 
 备份：
 
 ```bash
-tar czf backup-$(date +%F).tgz data/progress.db data/published_scripts.md episodes/
+tar czf backup-$(date +%F).tgz data/published_scripts.md episodes/
 ```
 
 ---
@@ -244,21 +244,13 @@ BGM：把一首免版权 mp3 放到 `video/public/bgm/`，`./vv tts` 会自动�
 
 ```
 .
-├── AGENTS.md                     # 给 Agent 的项目说明和命令表
-├── DEPLOY.md                     # 本文档
-├── 中英混读单词视频-技术调研.md    # 方案调研与设计
+├── AGENTS.md / README.md
 ├── vv                            # CLI 入口
-├── requirements.txt
-├── scripts/setup.sh              # 一键安装
-├── .cursor/
-│   ├── skills/vocab-video/SKILL.md
-│   ├── rules/copywriting.mdc
-│   ├── hooks.json
-│   └── hooks/validate-script.sh
-├── pipeline/                     # Python：config / lexicon / plan / validate / tts / produce / cli
-├── video/                        # Remotion：src/MarkerNotes/{Reading,FocusCard,Summary}.tsx
-├── data/                         # 词库、进度、选题库、范文、黑名单
-├── episodes/<id>/                # 每期产物
-├── design/                       # 视觉设计稿
-└── 调研素材/                      # 样本视频截图
+├── pipeline/                     # Python CLI + 工作台 API
+├── workbench/                    # 可视化工作台
+├── video/                        # Remotion 模板
+├── data/                         # 选题库、范文、黑名单、词库缓存
+├── episodes/<id>/                # 每期文本与产物
+├── docs/                         # 部署、调研、设计稿
+└── scripts/setup.sh
 ```

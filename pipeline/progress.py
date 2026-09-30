@@ -1,74 +1,81 @@
-import datetime as dt
-import sqlite3
+"""学习进度：不单独存库，全部从 episodes/*/script.json 推算。
 
-from .config import PROGRESS_DB, PUBLISHED
-
-SCHEMA = """
-CREATE TABLE IF NOT EXISTS episodes(
-  id TEXT PRIMARY KEY, level TEXT, theme TEXT, genre TEXT, ending TEXT,
-  status TEXT, created_at TEXT, committed_at TEXT,
-  plays INT, likes INT, saves INT, completion REAL);
-CREATE TABLE IF NOT EXISTS word_usage(
-  word TEXT, episode_id TEXT, seq INT, is_review INT, used_at TEXT,
-  PRIMARY KEY(word, episode_id));
+一期入库后 script.json 里会有 "published_at"；已用词、复习调度、最近几期都由已入库的期算出来，
+data/published_scripts.md 也由这里整体重新生成。数据跟着 git 走，多台机器合并不会冲突。
 """
+import datetime as dt
+import json
 
-
-def connect():
-    con = sqlite3.connect(PROGRESS_DB)
-    con.row_factory = sqlite3.Row
-    con.executescript(SCHEMA)
-    return con
+from .config import EPISODES, PUBLISHED
+from .script import full_text, save_json, sentence_text
 
 
 def now():
-    return dt.datetime.now().isoformat(timespec="seconds")
+    return dt.datetime.now().astimezone().isoformat(timespec="seconds")
 
 
-def next_episode_id(con, existing_dirs):
-    nums = [int(r["id"]) for r in con.execute("SELECT id FROM episodes") if r["id"].isdigit()]
-    nums += [int(d) for d in existing_dirs if d.isdigit()]
+def all_scripts():
+    """[(期号, script)]，按期号排序；没有 script.json 的期跳过。"""
+    out = []
+    if not EPISODES.exists():
+        return out
+    for d in sorted(p for p in EPISODES.iterdir() if p.is_dir()):
+        f = d / "script.json"
+        if f.exists():
+            try:
+                out.append((d.name, json.loads(f.read_text(encoding="utf-8"))))
+            except json.JSONDecodeError:
+                continue
+    return out
+
+
+def published(exclude=None):
+    """已入库的期，按入库时间升序。exclude：排除的期号（校验当前期时不和自己比）。"""
+    eps = [(i, s) for i, s in all_scripts() if s.get("published_at") and i != exclude]
+    return sorted(eps, key=lambda e: (e[1]["published_at"], e[0]))
+
+
+def next_episode_id():
+    nums = [int(d.name) for d in EPISODES.iterdir() if d.is_dir() and d.name.isdigit()] if EPISODES.exists() else []
     return f"{(max(nums) + 1) if nums else 1:03d}"
 
 
-def used_words(con):
-    return {r["word"] for r in con.execute("SELECT DISTINCT word FROM word_usage")}
+def used_words(exclude=None):
+    return {w["word"].lower() for _, s in published(exclude) for w in s.get("words", [])}
 
 
-def committed_count(con):
-    return con.execute("SELECT COUNT(*) FROM episodes WHERE status='committed'").fetchone()[0]
-
-
-def review_due(con, limit=6):
+def review_due(limit=6, exclude=None):
     """出现过的词，距上次出现已隔 ≥3 期、总出现 <3 次，按最久未复习排序。"""
-    seq_now = committed_count(con)
-    rows = con.execute("""
-        SELECT word, COUNT(*) AS n, MAX(seq) AS last_seq FROM word_usage
-        GROUP BY word HAVING n < 3 AND ? - last_seq >= 3
-        ORDER BY last_seq LIMIT ?""", (seq_now, limit)).fetchall()
-    return [r["word"] for r in rows]
+    eps = published(exclude)
+    seen = {}
+    for seq, (_, s) in enumerate(eps, 1):
+        for w in s.get("words", []):
+            n, _ = seen.get(w["word"].lower(), (0, 0))
+            seen[w["word"].lower()] = (n + 1, seq)
+    due = [(last, word) for word, (n, last) in seen.items() if n < 3 and len(eps) - last >= 3]
+    return [word for _, word in sorted(due)[:limit]]
 
 
-def recent_episodes(con, limit=30):
-    return con.execute("""SELECT id, theme, genre, ending FROM episodes
-        WHERE status='committed' ORDER BY committed_at DESC LIMIT ?""", (limit,)).fetchall()
+def recent_episodes(limit=30, exclude=None):
+    out = []
+    for i, s in reversed(published(exclude)):
+        sents = s.get("sentences") or [[]]
+        out.append({"id": i, "theme": s.get("theme", ""), "genre": s.get("genre", ""),
+                    "ending": sentence_text(sents[-1])})
+    return out[:limit]
 
 
-def commit(con, script, ending):
-    seq = committed_count(con) + 1
-    con.execute("""INSERT OR REPLACE INTO episodes(id, level, theme, genre, ending, status, created_at, committed_at)
-        VALUES (?,?,?,?,?, 'committed', COALESCE((SELECT created_at FROM episodes WHERE id=?), ?), ?)""",
-                (script["id"], script["level"], script["theme"], script.get("genre", ""), ending,
-                 script["id"], now(), now()))
-    for w in script["words"]:
-        con.execute("INSERT OR REPLACE INTO word_usage VALUES (?,?,?,?,?)",
-                    (w["word"].lower(), script["id"], seq, int(bool(w.get("review"))), now()))
-    con.commit()
+def commit(d, script):
+    """标记入库并重新生成 published_scripts.md。"""
+    script["published_at"] = script.get("published_at") or now()
+    save_json(d / "script.json", script)
+    write_published()
 
 
-def append_published(script, text):
-    words = "、".join(w["word"] for w in script["words"])
-    block = (f"\n## {script['id']} · {script['theme']}（{script.get('genre', '')}，{script['level']}）\n\n"
-             f"> {text}\n\n单词：{words}\n")
-    with open(PUBLISHED, "a", encoding="utf-8") as f:
-        f.write(block)
+def write_published():
+    blocks = ["# 已发布文案\n\n由 `./vv commit` 根据 episodes/*/script.json 自动生成，用于去重和新鲜度检查，不要手改。\n"]
+    for i, s in published():
+        words = "、".join(w["word"] for w in s["words"])
+        blocks.append(f"\n## {i} · {s['theme']}（{s.get('genre', '')}，{s['level']}）\n\n"
+                      f"> {full_text(s)}\n\n单词：{words}\n")
+    PUBLISHED.write_text("".join(blocks), encoding="utf-8")
