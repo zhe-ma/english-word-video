@@ -1,0 +1,27 @@
+# 批量文案示例。格式说明见 batch/README.md。
+defaults:
+  level: 考研
+  source: 出自考研真题
+
+episodes:
+  - id: search-illusion
+    title: 搜到答案，就算懂了吗？
+    cover: [搜到答案，, 就算懂了吗？]
+    pages:
+      - 搜到一篇explanation，就以为懂了？have access to资料，不等于掌握知识。
+      - 九项实验发现，网上搜索可能抬高自评知识，产生illusion。
+      - 要distinguish：答案在external资料里，还是成了internal知识？
+      - 怎么evaluate？隔一会儿，不看原文，试着recall。
+      - 再in your own words，讲清概念间的联系。
+      - 最后核对、补漏。熟悉感，还不是充分的evidence。
+    items:
+      - [explanation, n., 解释]
+      - [have access to, 短语, 能够获取]
+      - [illusion, n., 错觉]
+      - [distinguish, v., 区分]
+      - [external, adj., 外部的]
+      - [internal, adj., 内部的]
+      - [evaluate, v., 评估]
+      - [recall, v., 回忆]
+      - [in your own words, 短语, 用自己的话]
+      - [evidence, n., 证据]

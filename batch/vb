@@ -1,0 +1,11 @@
+#!/bin/bash
+# 批量生成入口：batch/vb <check|stills|build> <批量文件> ...
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+ARGS=()
+for a in "$@"; do
+  # 相对路径按调用时的目录解析，再切到项目根目录运行
+  if [[ -e "$a" && "$a" != /* ]]; then a="$PWD/$a"; fi
+  ARGS+=("$a")
+done
+export PYTHONUNBUFFERED=1
+cd "$ROOT" && exec "$ROOT/.venv/bin/python" -m batch.cli "${ARGS[@]}"

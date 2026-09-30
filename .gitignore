@@ -31,6 +31,12 @@ episodes/*/timeline.json
 episodes/*/report.json
 episodes/*/qa_audio.json
 
+# 批量生成（batch/）
+batch/video/node_modules/
+batch/video/public/fonts/
+batch/video/public/audio/
+batch/out/
+
 # 参考样本视频（第三方内容，不入库）
 *.MP4
 *.mp4

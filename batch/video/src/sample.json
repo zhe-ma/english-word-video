@@ -1,0 +1,343 @@
+{
+  "id": "search-illusion",
+  "vol": "",
+  "series": "中英混读单词",
+  "title": "搜到答案，就算懂了吗？",
+  "cover": [
+    "搜到答案，",
+    "就算懂了吗？"
+  ],
+  "level": "考研",
+  "source": "出自考研真题",
+  "hint": "哪个词还不熟？评论区留个词",
+  "items": [
+    {
+      "en": "explanation",
+      "pos": "n.",
+      "gloss": "解释",
+      "kind": "word",
+      "ipa": "/ˌekspləˈneiʃən/",
+      "syllables": "ex · pla · na · tion",
+      "color": "yellow"
+    },
+    {
+      "en": "have access to",
+      "pos": "phr.",
+      "gloss": "能够获取",
+      "kind": "phrase",
+      "ipa": "",
+      "syllables": "",
+      "color": "yellow"
+    },
+    {
+      "en": "illusion",
+      "pos": "n.",
+      "gloss": "错觉",
+      "kind": "word",
+      "ipa": "/iˈljuːʒən/",
+      "syllables": "il · lu · sion",
+      "color": "yellow"
+    },
+    {
+      "en": "distinguish",
+      "pos": "v.",
+      "gloss": "区分",
+      "kind": "word",
+      "ipa": "/disˈtiŋɡwiʃ/",
+      "syllables": "dis · tin · guish",
+      "color": "yellow"
+    },
+    {
+      "en": "external",
+      "pos": "adj.",
+      "gloss": "外部的",
+      "kind": "word",
+      "ipa": "/ikˈstəːnl/",
+      "syllables": "ex · ter · nal",
+      "color": "yellow"
+    },
+    {
+      "en": "internal",
+      "pos": "adj.",
+      "gloss": "内部的",
+      "kind": "word",
+      "ipa": "/inˈtəːnəl/",
+      "syllables": "in · ter · nal",
+      "color": "yellow"
+    },
+    {
+      "en": "evaluate",
+      "pos": "v.",
+      "gloss": "评估",
+      "kind": "word",
+      "ipa": "/iˈvæljueit/",
+      "syllables": "eval · u · ate",
+      "color": "yellow"
+    },
+    {
+      "en": "recall",
+      "pos": "v.",
+      "gloss": "回忆",
+      "kind": "word",
+      "ipa": "/riˈkɒːl/",
+      "syllables": "re · call",
+      "color": "yellow"
+    },
+    {
+      "en": "in your own words",
+      "pos": "phr.",
+      "gloss": "用自己的话",
+      "kind": "phrase",
+      "ipa": "",
+      "syllables": "",
+      "color": "yellow"
+    },
+    {
+      "en": "evidence",
+      "pos": "n.",
+      "gloss": "证据",
+      "kind": "word",
+      "ipa": "/ˈevidəns/",
+      "syllables": "ev · i · dence",
+      "color": "yellow"
+    }
+  ],
+  "pages": [
+    {
+      "start": 0.25,
+      "end": 6.432,
+      "tokens": [
+        {
+          "t": "搜到一篇"
+        },
+        {
+          "i": 0,
+          "text": "explanation",
+          "start": 1.156,
+          "end": 2.013
+        },
+        {
+          "t": "，就以为懂了？"
+        },
+        {
+          "i": 1,
+          "text": "have access to",
+          "start": 3.582,
+          "end": 4.523
+        },
+        {
+          "t": "资料，不等于掌握知识。"
+        }
+      ]
+    },
+    {
+      "start": 6.882,
+      "end": 12.002,
+      "tokens": [
+        {
+          "t": "九项实验发现，网上搜索可能抬高自评知识，产生"
+        },
+        {
+          "i": 2,
+          "text": "illusion",
+          "start": 11.409,
+          "end": 11.933
+        },
+        {
+          "t": "。"
+        }
+      ]
+    },
+    {
+      "start": 12.452,
+      "end": 17.342,
+      "tokens": [
+        {
+          "t": "要"
+        },
+        {
+          "i": 3,
+          "text": "distinguish",
+          "start": 12.644,
+          "end": 13.465
+        },
+        {
+          "t": "：答案在"
+        },
+        {
+          "i": 4,
+          "text": "external",
+          "start": 14.346,
+          "end": 14.906
+        },
+        {
+          "t": "资料里，还是成了"
+        },
+        {
+          "i": 5,
+          "text": "internal",
+          "start": 16.334,
+          "end": 16.822
+        },
+        {
+          "t": "知识？"
+        }
+      ]
+    },
+    {
+      "start": 17.792,
+      "end": 21.96,
+      "tokens": [
+        {
+          "t": "怎么"
+        },
+        {
+          "i": 6,
+          "text": "evaluate",
+          "start": 18.041,
+          "end": 18.779
+        },
+        {
+          "t": "？隔一会儿，不看原文，试着"
+        },
+        {
+          "i": 7,
+          "text": "recall",
+          "start": 21.444,
+          "end": 21.908
+        },
+        {
+          "t": "。"
+        }
+      ]
+    },
+    {
+      "start": 22.41,
+      "end": 25.412,
+      "tokens": [
+        {
+          "t": "再"
+        },
+        {
+          "i": 8,
+          "text": "in your own words",
+          "start": 22.659,
+          "end": 23.683
+        },
+        {
+          "t": "，讲清概念间的联系。"
+        }
+      ]
+    },
+    {
+      "start": 25.862,
+      "end": 30.622,
+      "tokens": [
+        {
+          "t": "最后核对、补漏。熟悉感，还不是充分的"
+        },
+        {
+          "i": 9,
+          "text": "evidence",
+          "start": 29.958,
+          "end": 30.577
+        },
+        {
+          "t": "。"
+        }
+      ]
+    }
+  ],
+  "review": {
+    "start": 31.322,
+    "end": 55.726,
+    "groups": [
+      {
+        "start": 31.322,
+        "entries": [
+          {
+            "i": 0,
+            "start": 31.672,
+            "enEnd": 32.78,
+            "end": 33.682
+          },
+          {
+            "i": 1,
+            "start": 34.132,
+            "enEnd": 35.426,
+            "end": 36.67
+          },
+          {
+            "i": 2,
+            "start": 37.12,
+            "enEnd": 37.912,
+            "end": 38.828
+          },
+          {
+            "i": 3,
+            "start": 39.278,
+            "enEnd": 40.288,
+            "end": 41.146
+          },
+          {
+            "i": 4,
+            "start": 41.596,
+            "enEnd": 42.446,
+            "end": 43.396
+          }
+        ],
+        "end": 43.846
+      },
+      {
+        "start": 43.846,
+        "entries": [
+          {
+            "i": 5,
+            "start": 44.196,
+            "enEnd": 44.964,
+            "end": 45.898
+          },
+          {
+            "i": 6,
+            "start": 46.348,
+            "enEnd": 47.296,
+            "end": 48.17
+          },
+          {
+            "i": 7,
+            "start": 48.62,
+            "enEnd": 49.392,
+            "end": 50.206
+          },
+          {
+            "i": 8,
+            "start": 50.656,
+            "enEnd": 51.928,
+            "end": 53.192
+          },
+          {
+            "i": 9,
+            "start": 53.642,
+            "enEnd": 54.434,
+            "end": 55.276
+          }
+        ],
+        "end": 55.726
+      }
+    ]
+  },
+  "overview": {
+    "start": 55.726,
+    "end": 57.526
+  },
+  "fps": 30,
+  "durationInFrames": 1726,
+  "estimated": false,
+  "stats": {
+    "body": 30.37,
+    "review": 24.4,
+    "total": 57.53,
+    "interp": []
+  },
+  "hash": "2c715727af7f"
+}

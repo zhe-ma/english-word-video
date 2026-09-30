@@ -23,6 +23,12 @@
 `level` 可选：`gk cet4 cet6 ky ielts toefl`。
 音色例如：`zh-CN-XiaoxiaoNeural`（默认）、`zh-CN-YunxiNeural`。语速默认 `+5%`。
 
+## 批量生成（新版，内容先行）
+
+`batch/` 是独立的批量流水线：AI 把一批文案写进 `batch/scripts/<名字>.yaml`，
+`batch/vb check|stills|build <名字>` 校验、出静帧、配音并渲染到 `batch/out/<名字>/`。
+格式、写稿提示词和调参位置见 `batch/README.md`。上面的 `./vv` 命令是旧版单期流程。
+
 ## 目录
 
 - `pipeline/`：Python CLI 和工作台 API（`.venv` 里运行）
