@@ -28,4 +28,4 @@ echo "==> Python 依赖"
 "$ROOT/.venv/bin/python" -c "import yaml, edge_tts" || "$ROOT/.venv/bin/pip" install -r "$ROOT/requirements.txt"
 
 chmod +x "$HERE/vb"
-echo "完成。试一下：batch/vb check example"
+echo "完成。试一下：batch/vb check 2023-eng1-text1"

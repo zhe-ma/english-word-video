@@ -25,7 +25,7 @@
 
 ## 批量生成（新版，内容先行）
 
-`batch/` 是独立的批量流水线：AI 把一批文案写进 `batch/scripts/<名字>.yaml`，
+`batch/` 是独立的批量流水线：真题原文和逐句参考译文放 `batch/passages/<名字>.yaml`，AI 把参考译文按段落压缩成几期、嵌入原文单词写进 `batch/scripts/<名字>.yaml`，
 `batch/vb check|stills|build <名字>` 校验、出静帧、配音并渲染到 `batch/out/<名字>/`。
 格式、写稿提示词和调参位置见 `batch/README.md`。上面的 `./vv` 命令是旧版单期流程。
 

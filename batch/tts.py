@@ -191,7 +191,9 @@ def audio_hash(ep):
     key = json.dumps([TIMELINE_VERSION, [p["tokens"] for p in ep["pages"]],
                       [(it["en"], it["pos"], it["gloss"]) for it in ep["items"]],
                       ep["voice"], ep["rate"], ep["review_voice"], ep["review_rate"],
-                      ep["gloss_voice"], ep["gloss_rate"]], ensure_ascii=False, sort_keys=True)
+                      ep["gloss_voice"], ep["gloss_rate"],
+                      [ep[k] for k in ("title", "cover", "source", "level", "series", "vol", "hint")]],
+                     ensure_ascii=False, sort_keys=True)
     return hashlib.sha1(key.encode()).hexdigest()[:12]
 
 

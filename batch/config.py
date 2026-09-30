@@ -24,8 +24,10 @@ DEFAULTS = {
     "gloss_voice": "zh-CN-XiaoxiaoNeural",  # 复习段中文释义
     "gloss_rate": "+0%",
     "hint": "哪个词还不熟？评论区留个词",
-    "source": "出自考研真题",                # 纸张底部的出处小字
+    "source": "",                           # 纸张底部的出处小字；不写则用原文文件里的 source
+    "passage": "",                          # 真题原文 + 参考译文文件（batch/passages/），相对批量文件所在目录
 }
+DEFAULT_SOURCE = "出自考研真题"               # 既没写 source、也没有原文文件时
 
 LEVEL_TAGS = {"高考": "gk", "CET-4": "cet4", "CET-6": "cet6", "考研": "ky", "雅思": "ielts", "托福": "toefl"}
 
@@ -41,13 +43,13 @@ OVERVIEW_HOLD = 1.8   # 结尾全文高亮帧停留
 REVIEW_GROUP_MAX = 5
 
 COLORS = ["yellow"]
-# 全文字数（汉字和标点计 1，英文字母计 0.55）超过这个值，一页放下就要明显缩小字号
-MAX_TEXT_WEIGHT = 200
+# 全文占位字数（汉字和标点计 1，英文字母计 0.55，释义也算）超过这个值，一页放下就要明显缩小字号
+MAX_TEXT_WEIGHT = 250
 
 # 校验阈值：只产生提醒（!），不阻断生成
-ITEMS_RANGE = (8, 10)
+ITEMS_RANGE = (5, 7)
 MAX_GLOSS_LEN = 8
-BODY_RANGE = (25.0, 45.0)
+BODY_RANGE = (30.0, 50.0)
 TOTAL_RANGE = (50.0, 75.0)
 
 HETERONYMS = {

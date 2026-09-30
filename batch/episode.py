@@ -10,8 +10,8 @@ from pathlib import Path
 
 import yaml
 
-from .config import (DEFAULTS, ECDICT_DB, HETERONYMS, ITEMS_RANGE, LEVEL_TAGS, MAX_GLOSS_LEN, MAX_TEXT_WEIGHT,
-                     SCRIPTS)
+from .config import (DEFAULT_SOURCE, DEFAULTS, ECDICT_DB, HETERONYMS, ITEMS_RANGE, LEVEL_TAGS, MAX_GLOSS_LEN,
+                     MAX_TEXT_WEIGHT, SCRIPTS)
 
 HANZI = re.compile(r"[\u4e00-\u9fff]")
 EN_RUN = re.compile(r"[A-Za-z][A-Za-z'’-]*(?:\s+[A-Za-z][A-Za-z'’-]*)*")
@@ -170,7 +170,52 @@ def tokenize(text, items, keys):
     return merged
 
 
-def normalize(raw, index, defaults):
+@functools.lru_cache(maxsize=None)
+def read_passage(path):
+    """真题原文文件 → {source, ids: [句号], sents: {句号: {en, zh}}}。句号 = 段.句，如 3.2。"""
+    p = Path(path)
+    if not p.exists():
+        raise BatchError(f"找不到原文文件：{p}")
+    try:
+        raw = yaml.safe_load(p.read_text(encoding="utf-8"))
+    except yaml.YAMLError as e:
+        raise BatchError(f"原文文件 YAML 解析失败：{e}") from e
+    if not isinstance(raw, dict) or not isinstance(raw.get("paragraphs"), list):
+        raise BatchError(f"原文文件需要 paragraphs 列表：{p}")
+    ids, sents = [], {}
+    for pi, para in enumerate(raw["paragraphs"], 1):
+        for si, s in enumerate(para or [], 1):
+            sid = f"{pi}.{si}"
+            en, zh = str((s or {}).get("en") or "").strip(), str((s or {}).get("zh") or "").strip()
+            if not en or not zh:
+                raise BatchError(f"原文 {sid} 缺少 en 或 zh：{p}")
+            ids.append(sid)
+            sents[sid] = {"en": en, "zh": zh}
+    return {"source": str(raw.get("source") or "").strip(), "ids": ids, "sents": sents}
+
+
+def parse_src(src, psg):
+    """「3.1-3.2, 4」→ 句号列表；只写段号表示整段。"""
+    if src is None or src == "":
+        return []
+    parts = src if isinstance(src, list) else re.split(r"[,，\s]+", str(src))
+    ids, out = psg["ids"], []
+
+    def expand(x):
+        return [x] if x in ids else [i for i in ids if i.startswith(f"{x}.")] if "." not in x else []
+
+    for part in (str(x).strip() for x in parts):
+        if not part:
+            continue
+        a, _, b = part.partition("-")
+        lo, hi = expand(a.strip()), expand((b or a).strip())
+        if not lo or not hi:
+            raise BatchError(f"src「{part}」在原文里找不到（写成 段.句，如 3.2；整段写段号）")
+        out += ids[ids.index(lo[0]):ids.index(hi[-1]) + 1]
+    return list(dict.fromkeys(out))
+
+
+def normalize(raw, index, defaults, base=SCRIPTS):
     if not isinstance(raw, dict):
         raise BatchError(f"第 {index} 条不是对象")
     ep = {k: raw.get(k, v) for k, v in defaults.items()}
@@ -180,23 +225,56 @@ def normalize(raw, index, defaults):
     cover = raw.get("cover") or ep["title"]
     ep["cover"] = [str(c) for c in cover] if isinstance(cover, list) else [str(cover)]
 
-    ep["source"] = str(ep["source"] or "").strip()
+    ep["passage"] = str((Path(base) / ep["passage"]).resolve()) if ep["passage"] else ""
+    psg = read_passage(ep["passage"]) if ep["passage"] else None
+    ep["source"] = str(ep["source"] or (psg and psg["source"]) or DEFAULT_SOURCE).strip()
 
     ep["items"] = [parse_item(it) for it in (raw.get("items") or [])]
     keys = item_keys(ep["items"])
     ep["pages"] = []
     for p in raw.get("pages") or []:
-        text = str((p.get("text") if isinstance(p, dict) else p) or "")
-        ep["pages"].append({"text": text, "tokens": tokenize(text, ep["items"], keys)})
+        text, src = (p.get("text"), p.get("src")) if isinstance(p, dict) else (p, None)
+        text = str(text or "")
+        ep["pages"].append({"text": text, "tokens": tokenize(text, ep["items"], keys),
+                            "src": parse_src(src, psg) if psg else []})
     return ep
 
 
-def text_weight(tokens):
-    """排版占位的粗略字数：汉字和标点计 1，英文字母计 0.55，每个英文片段再加 1。"""
+def text_weight(tokens, items=None):
+    """排版占位的粗略字数：汉字和标点计 1，英文字母计 0.55，每个英文片段再加 1；传入 items 时把释义也算上。"""
     w = 0.0
     for tk in tokens:
         w += len(tk["t"]) if "t" in tk else len(tk.get("text") or tk.get("en")) * 0.55 + 1
+        if items is not None and "i" in tk:
+            it = items[tk["i"]]
+            w += len(it["gloss"]) * 0.8 + len(it["pos"]) * 0.45 + 1
     return w
+
+
+def restore(page, items):
+    """把正文里的英文学习项换回释义（第一个义项），得到纯中文：用来检查读起来通不通、意思对不对。"""
+    out = []
+    for tk in page["tokens"]:
+        if "t" in tk:
+            out.append(tk["t"])
+        elif "i" in tk:
+            out.append(re.split(r"[；;]", items[tk["i"]]["gloss"])[0])
+        else:
+            out.append(tk["en"])
+    return "".join(out)
+
+
+def passage_words(text):
+    return [w.lower().replace("’", "'") for w in re.findall(r"[A-Za-z][A-Za-z'’]*", text)]
+
+
+def in_passage(item, words):
+    """学习项（任一屈折词形，或 forms 里写的词形）是否在原文里连续出现。"""
+    for key, _ in item_keys([item]):
+        n = len(key)
+        if any(all(words[p + k] in key[k] for k in range(n)) for p in range(len(words) - n + 1)):
+            return True
+    return False
 
 
 # ---------- 校验 ----------
@@ -234,7 +312,23 @@ def check(ep):
     if not lo <= len(ep["items"]) <= hi:
         W(f"学习项 {len(ep['items'])} 个，建议 {lo}–{hi} 个")
 
-    total = sum(text_weight(p["tokens"]) for p in ep["pages"])
+    if ep.get("passage"):
+        psg = read_passage(ep["passage"])
+        for n, p in enumerate(ep["pages"], 1):
+            if not p["src"]:
+                W(f"第 {n} 段没写 src（对应原文哪几句），没法和参考译文对照")
+        for i, it in enumerate(ep["items"]):
+            scope = [s for p in ep["pages"] if any(tk.get("i") == i for tk in p["tokens"]) for s in p["src"]]
+            scope = scope or psg["ids"]
+            words = passage_words(" ".join(psg["sents"][s]["en"] for s in scope))
+            if not in_passage(it, words):
+                W(f"{it['en']}：对应的原文句子里没有这个词，学习项要从原文里选")
+            zh = "".join(psg["sents"][s]["zh"] for s in scope)
+            senses = [s.strip().rstrip("的") for s in re.split(r"[；;，,、/]", it["gloss"]) if s.strip()]
+            if senses and not any(s in zh for s in senses):
+                W(f"{it['en']}：释义「{it['gloss']}」在对应的参考译文里找不到，确认和译文的译法一致")
+
+    total = sum(text_weight(p["tokens"], ep["items"]) for p in ep["pages"])
     if total > MAX_TEXT_WEIGHT:
         W(f"全文约 {total:.0f} 字，超过 {MAX_TEXT_WEIGHT}，一页放下需要明显缩小字号，建议删减")
     for n, p in enumerate(ep["pages"], 1):
@@ -266,9 +360,10 @@ def load_episodes(arg, only=None):
     out, ids = [], set()
     for n, raw in enumerate(raws, 1):
         try:
-            ep = normalize(raw, n, defaults)
+            ep = normalize(raw, n, defaults, path.parent)
         except BatchError as e:
-            ep = {"id": f"{n:02d}", "title": str((raw or {}).get("title", "")) if isinstance(raw, dict) else ""}
+            raw = raw if isinstance(raw, dict) else {}
+            ep = {"id": SAFE_ID.sub("-", str(raw.get("id") or f"{n:02d}")), "title": str(raw.get("title", ""))}
             out.append((ep, [str(e)], []))
             continue
         errors, warnings = check(ep)

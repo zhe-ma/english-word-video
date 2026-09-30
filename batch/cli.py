@@ -1,6 +1,6 @@
 """批量生成中英混读单词视频。
 
-  batch/vb check  <批量文件>            解析 + 校验 + 估算时长，不联网
+  batch/vb check  <批量文件>            解析 + 校验 + 估算时长 + 写对照稿 review.md，不联网
   batch/vb stills <批量文件>            估算时间轴，渲染质检静帧和封面，不联网
   batch/vb build  <批量文件>            校验 → 配音 → 渲染成片和封面 → 抽帧 → 汇总
 
@@ -13,7 +13,7 @@ import wave
 
 from . import media, render, tts
 from .config import BODY_RANGE, OUT, SR, TOTAL_RANGE
-from .episode import BatchError, load_episodes
+from .episode import BatchError, load_episodes, read_passage, restore
 
 
 def save_json(path, data):
@@ -52,6 +52,28 @@ def batch_dir(path):
     return OUT / path.stem
 
 
+def write_review(root, path, eps):
+    """对照稿：每段正文旁边放原文、参考译文和「还原中文」（英文换回释义），给人或 AI 审稿用。"""
+    lines = [f"# {path.name} 对照稿\n",
+             "「还原」是把正文里的英文换成释义后的纯中文：它必须通顺，意思必须和「译文」一致。\n"]
+    for ep, errors, _ in eps:
+        if errors:
+            continue
+        psg = read_passage(ep["passage"]) if ep.get("passage") else None
+        lines += [f"## [{ep['id']}] {ep['title']}", "",
+                  "学习项：" + " · ".join(f"{it['en']} {it['pos']} {it['gloss']}".replace("  ", " ") for it in ep["items"]), ""]
+        for n, p in enumerate(ep["pages"], 1):
+            lines.append(f"### 第 {n} 段" + (f"（原文 {', '.join(p['src'])}）" if p["src"] else ""))
+            if psg and p["src"]:
+                lines.append("- 原文：" + " ".join(psg["sents"][s]["en"] for s in p["src"]))
+                lines.append("- 译文：" + "".join(psg["sents"][s]["zh"] for s in p["src"]))
+            lines += [f"- 正文：{p['text'].strip()}", f"- 还原：{restore(p, ep['items'])}", ""]
+    root.mkdir(parents=True, exist_ok=True)
+    out = root / "review.md"
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return out
+
+
 def cmd_check(args):
     path, eps = load_episodes(args.file, args.only)
     bad = 0
@@ -60,6 +82,7 @@ def cmd_check(args):
         print_report(ep, errors, warnings + (timing_warnings(tl) if tl else []), tl)
         bad += bool(errors)
     print(f"\n共 {len(eps)} 期，{len(eps) - bad} 期可以生成" + (f"，{bad} 期有 ✗ 必须修" if bad else ""))
+    print(f"对照稿 → {write_review(batch_dir(path), path, eps)}")
     return 1 if bad else 0
 
 

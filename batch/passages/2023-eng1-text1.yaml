@@ -1,0 +1,54 @@
+# 2023 考研英语一 阅读 Text 1。逐句原文 + 参考译文，句号 = 段.句（如 3.2）。
+# 参考译文是写稿的唯一依据：文案只能压缩它，不能改意思；学习项的释义要和这里的译法一致。
+source: 出自 2023 考研英语一 阅读1
+
+glossary:               # 专名、术语的统一译法（人名地名按新华社译名，首次出现用全称）
+  Texas: 美国得克萨斯州（简称得州，不写“德州”）
+  Austin: 奥斯汀（得州首府）
+  State Board of Education: 州教育委员会
+  Pat Hardy: 帕特·哈迪（州教育委员会委员）
+  Dan Quinn: 丹·奎因
+  Texas Freedom Network: 得克萨斯自由网络（监督公共教育的非营利组织）
+  National Center for Science Education: 美国国家科学教育中心（科学家和教师组成的非营利组织）
+  Glenn Branch: 格伦·布兰奇（该中心副主任）
+  pre-teen pupils: 十一二岁的学生
+  local school boards: 地方学校董事会
+
+paragraphs:
+  - - en: The weather in Texas may have cooled since the recent extreme heat, but the temperature will be high at the State Board of Education meeting in Austin this month as officials debate how climate change is taught in Texas schools.
+      zh: 最近的极端高温过后，得克萨斯州的天气或许已经转凉，但本月在奥斯汀召开的州教育委员会会议上气氛仍将十分火热，因为官员们要辩论得州学校该如何讲授气候变化。
+
+  - - en: Pat Hardy, who sympathized with views of the energy sector, is resisting the proposed change to science standards for pre-teen pupils.
+      zh: 帕特·哈迪认同能源行业的观点，她正在抵制针对十一二岁学生的科学课程标准拟议修改。
+    - en: These would emphasise the primacy of human activity in recent climate change and encourage discussion of mitigation measures.
+      zh: 这些修改将强调人类活动在近期气候变化中的首要地位，并鼓励讨论减缓措施。
+
+  - - en: Most scientists and experts sharply dispute Hardy's views.
+      zh: 大多数科学家和专家强烈反驳哈迪的观点。
+    - en: '"They casually dismiss the career work of scholars and scientists as just another misguided opinion," says Dan Quinn, senior communications strategist at the Texas Freedom Network, a non-profit group that monitors public education.'
+      zh: 得克萨斯自由网络是一个监督公共教育的非营利组织，其高级传播策略师丹·奎因说：“他们轻率地否定学者和科学家毕生的工作，把它当作又一种错误观点。”
+    - en: '"What millions of Texas kids learn in their public schools is determined too often by the political ideology of partisan board members, rather than facts and sound scholarship."'
+      zh: “数百万得州孩子在公立学校里学什么，太多时候是由带有党派立场的委员们的政治意识形态决定，而不是由事实和严谨的学术研究决定。”
+
+  - - en: Such debate reflects fierce discussions across the US and around the world, as researchers, policymakers, teachers and students step up demands for a greater focus on teaching about the facts of climate change in schools.
+      zh: 这样的争论反映出全美乃至全世界的激烈讨论：研究人员、政策制定者、教师和学生都在加紧要求学校更加重视讲授气候变化的事实。
+
+  - - en: A study last year by the National Center for Science Education, a non-profit group of scientists and teachers, looking at how state public schools across the country address climate change in science classes, gave barely half of US states a grade B+ or higher.
+      zh: 美国国家科学教育中心是一个由科学家和教师组成的非营利组织，它去年的一项研究考察了全美各州公立学校在科学课上如何论及气候变化这一话题，结果获得B+或更高评分的州勉强达到一半。
+    - en: Among the 10 worst performers were some of the most populous states, including Texas, which was given the lowest grade (F) and has a disproportionate influence because its textbooks are widely sold elsewhere.
+      zh: 表现最差的10个州里有几个人口大州，其中包括得州。得州得了最低分F，而且由于它的教科书在其他州也广为销售，它的影响力大得不成比例。
+
+  - - en: Glenn Branch, the centre's deputy director, cautions that setting state-level science standards is only one limited benchmark in a country that decentralises decisions to local school boards.
+      zh: 该中心副主任格伦·布兰奇提醒说，美国把教育决策权下放给了地方学校董事会，因此州一级的科学标准只是衡量气候教育水平的一项有限的基准。
+    - en: Even if a state is considered a high performer in its science standards, "that does not mean it will be taught", he says.
+      zh: 他说，即使一个州的科学标准被认为表现优异，“也不意味着这些内容就会被讲授”。
+
+  - - en: Another issue is that while climate change is well integrated into some subjects and at some ages — such as earth and space sciences in high schools — it is not as well represented in curricula for younger children and in subjects that are more widely taught, such as biology and chemistry.
+      zh: 另一个问题是，虽然气候变化已经很好地融入了某些学科和某些年龄段的教学，例如高中的地球与空间科学，但在低龄儿童的课程中，以及在生物、化学这类更普遍开设的学科中，它的体现就没那么充分。
+    - en: It is also less prominent in many social studies courses.
+      zh: 在许多社会研究课程中，它也不那么突出。
+
+  - - en: Branch points out that, even if a growing number of official guidelines and textbooks reflect scientific consensus on climate change, unofficial educational materials that convey more slanted perspectives are being distributed to teachers.
+      zh: 布兰奇指出，即使越来越多的官方指导方针和教科书反映了关于气候变化的科学共识，一些传达更偏颇观点的非官方教育材料仍在被分发给教师。
+    - en: They include materials sponsored by libertarian think-tanks and energy industry associations.
+      zh: 其中包括由自由意志主义智库和能源行业协会资助的材料。

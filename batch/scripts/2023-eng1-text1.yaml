@@ -1,0 +1,82 @@
+# 2023 考研英语一 阅读1，按段落拆成四期。原文和参考译文在 passage 文件里；写稿要求见 batch/README.md。
+defaults:
+  level: 考研
+  passage: ../passages/2023-eng1-text1.yaml
+
+episodes:
+  # 原文第 1–2 段
+  - id: texas-climate-1
+    title: 得州课堂，气候变化怎么教？（一）
+    cover: [得州课堂，, 气候变化怎么教？（一）]
+    pages:
+      - text: 美国得克萨斯州的热浪刚退，本月的州教育委员会会议却注定火药味十足：官员们要debate得州学校该如何讲授气候变化。
+        src: 1.1
+      - text: 委员帕特·哈迪sympathize with能源行业的观点，正在resist一项科学课程标准的修改。
+        src: 2.1
+      - text: 这项修改面向十一二岁的学生，要emphasize人类活动在近期气候变化中的primacy，并鼓励讨论如何减缓气候变化。
+        src: 2.1-2.2
+    items:
+      - [debate, v., 辩论]
+      - [sympathize with, v., 认同]
+      - [resist, v., 抵制]
+      - [emphasize, v., 强调, [emphasise]]
+      - [primacy, n., 首要地位]
+
+  # 原文第 3 段
+  - id: texas-climate-2
+    title: 得州课堂，气候变化怎么教？（二）
+    cover: [得州课堂，, 气候变化怎么教？（二）]
+    pages:
+      - text: 得州教育委员会委员帕特·哈迪，反对在科学课标里强调人类活动是气候变化的主因，大多数科学家和专家都强烈dispute她的观点。
+        src: 3.1
+      - text: 监督公共教育的非营利组织“得克萨斯自由网络”的策略师丹·奎因批评说，哈迪这类委员轻率地dismiss了学者和科学家毕生的研究，只把它当成又一种错误观点。
+        src: 3.2
+      - text: 他还说，数百万得州孩子在学校学什么，太多时候是由partisan委员的ideology决定，而不是由事实和严谨的scholarship决定。
+        src: 3.3
+    items:
+      - [dispute, v., 反驳]
+      - [dismiss, v., 否定]
+      - [partisan, adj., 有党派立场的]
+      - [ideology, n., 意识形态]
+      - [scholarship, n., 学术研究]
+
+  # 原文第 4–5 段
+  - id: texas-climate-3
+    title: 得州课堂，气候变化怎么教？（三）
+    cover: [得州课堂，, 气候变化怎么教？（三）]
+    pages:
+      - text: 得州正为学校怎么教气候变化争论不休，这场争论reflect出全美乃至全世界的fierce讨论：研究人员、政策制定者和师生，都在越来越强烈地要求学校多讲气候变化的事实。
+        src: 4.1
+      - text: 美国国家科学教育中心去年做了一项研究，考察各州公立学校在科学课上如何address气候变化这个话题。
+        src: 5.1
+      - text: 结果，获得B+或更高评分的州，barely达到一半。
+        src: 5.1
+      - text: 表现最差的10个州里有几个人口大州，得州也在其中，得了最低分F。
+        src: 5.2
+      - text: 而且得州的教科书在其他州也广为销售，所以它的影响力disproportionate，远远超出一个州该有的分量。
+        src: 5.2
+    items:
+      - [reflect, v., 反映]
+      - [fierce, adj., 激烈的]
+      - [address, v., 论及]
+      - [barely, adv., 勉强]
+      - [disproportionate, adj., 大得不成比例]
+
+  # 原文第 6–8 段
+  - id: texas-climate-4
+    title: 得州课堂，气候变化怎么教？（四）
+    cover: [得州课堂，, 气候变化怎么教？（四）]
+    pages:
+      - text: 各州科学标准被打了分，可这能说明全部问题吗？美国国家科学教育中心副主任格伦·布兰奇提醒：美国把教育决策权下放给了地方学校董事会，州标准只是衡量气候教育的有限benchmark。
+        src: 6.1
+      - text: 另一个问题是：气候变化在高中地球与空间科学里integrate得很好，但在低龄儿童的curriculum里，在生物、化学这些开设更普遍的课上，体现得都不够充分。
+        src: 7.1
+      - text: 布兰奇还指出，即使越来越多官方教科书反映了科学界关于气候变化的consensus，仍有非官方材料流向教师，传达偏颇的perspective，其中就有能源行业协会sponsor的材料。
+        src: 8.1-8.2
+    items:
+      - [benchmark, n., 基准]
+      - [integrate, v., 融入]
+      - [curriculum, n., 课程, [curricula]]
+      - [consensus, n., 共识]
+      - [perspective, n., 观点]
+      - [sponsor, v., 资助]
