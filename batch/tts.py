@@ -15,7 +15,7 @@ import pyphen
 from . import media
 from .config import (CACHE, COLORS, EN_ZH_GAP, FPS, GROUP_LEAD, ITEM_GAP, LEAD_IN, OVERVIEW_HOLD, PAGE_GAP,
                      REVIEW_GAP, REVIEW_GROUP_MAX, SR)
-from .episode import PHRASE_POS, ipa
+from .episode import PHRASE_POS, ipa, review_senses
 
 HANZI = re.compile(r"[\u4e00-\u9fff]")
 HYPH = pyphen.Pyphen(lang="en_US")
@@ -167,11 +167,21 @@ def align_items(tokens, marks, dur):
 
 # ---------- 组装 ----------
 
+def item_ipa(it):
+    if it["en"].lower() == "competency":
+        return "/ˈkɒmpɪtənsi/"
+    if it["kind"] == "word":
+        return ipa(it["en"])
+    parts = [ipa(w).strip("/") for w in it["en"].split()]
+    parts = [p for p in parts if p]
+    return f"/{' '.join(parts)}/" if parts else ""
+
+
 def item_view(it, n):
     word = it["kind"] == "word"
     pos = "phr." if it["pos"] in PHRASE_POS else it["pos"]
-    return {"en": it["en"], "pos": pos, "gloss": it["gloss"], "kind": it["kind"],
-            "ipa": ipa(it["en"]) if word else "",
+    return {"en": it["en"], "pos": pos, "gloss": it["gloss"], "senses": review_senses(it), "kind": it["kind"],
+            "ipa": item_ipa(it),
             "syllables": HYPH.inserted(it["en"]).replace("-", " · ") if word else "",
             "color": COLORS[n % len(COLORS)]}
 
@@ -192,7 +202,7 @@ def audio_hash(ep):
                       [(it["en"], it["pos"], it["gloss"]) for it in ep["items"]],
                       ep["voice"], ep["rate"], ep["review_voice"], ep["review_rate"],
                       ep["gloss_voice"], ep["gloss_rate"],
-                      [ep[k] for k in ("title", "cover", "source", "level", "series", "vol", "hint")]],
+                      [ep[k] for k in ("title", "cover", "source", "level", "series", "vol")]],
                      ensure_ascii=False, sort_keys=True)
     return hashlib.sha1(key.encode()).hexdigest()[:12]
 
@@ -269,7 +279,7 @@ def assemble(ep, estimated=False):
 
     timeline = {
         "id": ep["id"], "vol": ep["vol"], "series": ep["series"], "title": ep["title"], "cover": ep["cover"],
-        "level": ep["level"], "source": ep["source"], "hint": ep["hint"],
+        "level": ep["level"], "source": ep["source"],
         "items": [item_view(it, n) for n, it in enumerate(ep["items"])],
         "pages": pages,
         "review": {"start": round(review_start, 3), "end": round(review_end, 3), "groups": groups},

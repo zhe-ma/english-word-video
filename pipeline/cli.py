@@ -46,11 +46,6 @@ def main():
 
     sub.add_parser("status", help="查看各期进度")
 
-    p = sub.add_parser("serve", help="启动可视化工作台")
-    p.add_argument("--port", type=int, default=8765, help="API 端口")
-    p.add_argument("--ui-port", type=int, default=5173, help="前端端口")
-    p.add_argument("--api-only", action="store_true", help="只启动 API，不启动前端")
-
     a = ap.parse_args()
     if a.cmd == "init-db":
         from . import lexicon
@@ -86,9 +81,6 @@ def main():
     elif a.cmd == "status":
         from . import produce
         produce.status()
-    elif a.cmd == "serve":
-        from . import server
-        server.main(a.port, a.ui_port, not a.api_only)
 
 
 if __name__ == "__main__":

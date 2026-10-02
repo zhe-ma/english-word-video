@@ -1,21 +1,23 @@
 import React from "react";
 import { Easing, interpolate } from "remotion";
 import { px } from "./FitBox";
-import { C, EN, MARK, TEXT, ZH } from "./theme";
+import { ANNO, C, EN, TEXT, ZH } from "./theme";
 import type { Item, Page, Token } from "./types";
 
 const CLAMP = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const LEADING_PUNCT = /^[，。！？；：、”’）》…—]+/;
-const RADIUS = "0.24em";
-const CLONE = { boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone" } as const;
+
+/** 标点跟在前一个字后面，中文本身可以在任意字间断开，一行尽量排满。 */
+const stickPunct = (text: string) => text.replace(/([，。！？；：、”’）》…—])/g, "\u2060$1");
 
 /**
- * 纸上的正文：各段连成一整段，两端对齐。没读到的段变淡；学习项读到时刷上荧光黄，后面的「词性 释义」浮现。
+ * 纸上的正文。没读到的句子也保持同色。学习词用预设里的字重和颜色。
+ * 像在书上注一行：单词下方是词性和释义，不带括号。读到那个词时淡入。
  * t 为 null 表示全部读完的静态状态（结尾全文帧、封面）。
  */
 export const MarkedText: React.FC<{ pages: Page[]; items: Item[]; t: number | null }> = ({ pages, items, t }) => (
-  <p style={{ fontFamily: ZH, fontSize: px(TEXT.size), lineHeight: TEXT.lineHeight, fontWeight: 500, color: C.ink,
-    letterSpacing: "0.02em", lineBreak: "strict", margin: 0 }}>
+  <p style={{ fontFamily: ZH, fontSize: px(TEXT.size), lineHeight: "var(--lh)", fontWeight: 400, color: C.ink,
+    letterSpacing: "0.01em", margin: 0 }}>
     {pages.map((p, k) => (
       <PageView key={k} p={p} items={items} t={t} />
     ))}
@@ -23,14 +25,13 @@ export const MarkedText: React.FC<{ pages: Page[]; items: Item[]; t: number | nu
 );
 
 const PageView: React.FC<{ p: Page; items: Item[]; t: number | null }> = ({ p, items, t }) => {
-  const opacity = t === null ? 1 : interpolate(t, [p.start - 0.15, p.start + 0.1], [0.32, 1], CLAMP);
   const out: React.ReactNode[] = [];
   let carry = "";
   p.tokens.forEach((tk, i) => {
     if ("t" in tk) {
       const text = carry ? tk.t.slice(carry.length) : tk.t;
       carry = "";
-      if (text) out.push(<span key={i}>{text}</span>);
+      if (text) out.push(<span key={i} data-piece="">{stickPunct(text)}</span>);
       return;
     }
     const next = p.tokens[i + 1];
@@ -39,46 +40,54 @@ const PageView: React.FC<{ p: Page; items: Item[]; t: number | null }> = ({ p, i
     if ("en" in tk) {
       out.push(
         <span key={i} style={{ whiteSpace: "nowrap" }}>
-          <span style={{ fontFamily: EN, fontWeight: 600, margin: "0 0.1em" }}>{tk.en}</span>
+          <span style={{ fontFamily: EN, fontWeight: 400 }}>{tk.en}</span>
           {punct}
         </span>,
       );
     } else {
-      out.push(<WordView key={i} tk={tk} item={items[tk.i]} t={t} trailing={punct} />);
+      out.push(<WordView key={i} tk={tk} item={items[tk.i]} t={t} trailing={punct} room={needsRoom(p.tokens, i)} />);
     }
   });
-  return <span style={{ opacity }}>{out}</span>;
+  return <span>{out}</span>;
 };
 
-const WordView: React.FC<{ tk: Extract<Token, { i: number }>; item: Item; t: number | null; trailing: string }> = ({
-  tk, item, t, trailing,
+/** 下一个学习词若只隔着一两个字（如「与」），给当前注释留出位置，避免两行注叠在一起。 */
+const needsRoom = (tokens: Token[], i: number) => {
+  const rest = tokens.slice(i + 1);
+  const bridge = rest.findIndex((tk) => !("t" in tk));
+  if (bridge < 0) return false;
+  const between = rest.slice(0, bridge).map((tk) => ("t" in tk ? tk.t : "")).join("");
+  return [...between].filter((ch) => ch.trim() && !LEADING_PUNCT.test(ch)).length <= 2;
+};
+
+/** 一行注释，落在统一行距里，不把这一行再撑高。 */
+const note = (opacity: number): React.CSSProperties => ({
+  position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)", marginTop: "0.14em",
+  width: "max-content", whiteSpace: "nowrap",
+  opacity, fontSize: `${TEXT.anno}em`, lineHeight: 1, fontWeight: 500, letterSpacing: 0,
+  fontFamily: ZH, color: ANNO.gloss,
+});
+
+const WordView: React.FC<{ tk: Extract<Token, { i: number }>; item: Item; t: number | null; trailing: string; room?: boolean }> = ({
+  tk, item, t, trailing, room,
 }) => {
   const start = tk.start ?? 0;
-  const dur = Math.max(0.25, (tk.end ?? start) - start);
-  const still = t === null;
-  const p = still ? 1 : interpolate(t, [start, start + Math.min(dur, 0.4)], [0, 1], { ...CLAMP, easing: Easing.out(Easing.cubic) });
-  const g = still ? 1 : interpolate(t, [start + 0.08, start + 0.35], [0, 1], { ...CLAMP, easing: Easing.out(Easing.cubic) });
+  const g = t === null ? 1 : interpolate(t, [start + 0.15, start + 0.55], [0, 1], { ...CLAMP, easing: Easing.out(Easing.cubic) });
+  const pos = item.pos.replace(/^phrase\.$/i, "phr.");
 
-  // 只用行内元素（不用 inline-block）：英文和释义之间允许折行，标点不会落到行首，
-  // 折行处高亮各自成圆角块。释义始终占位、只改透明度，读到时不会重排。
   return (
-    <>
-      <span style={{ ...CLONE, margin: "0 0.1em", padding: "0.06em 0.2em", borderRadius: RADIUS,
-        backgroundImage: `linear-gradient(${MARK}, ${MARK})`, backgroundRepeat: "no-repeat",
-        backgroundSize: `${p * 100}% 100%` }}>
-        <span style={{ fontFamily: EN, fontWeight: 600, whiteSpace: "nowrap" }}>{tk.text}</span>
-        <wbr />
-        <span style={{ ...CLONE, marginLeft: "0.3em", padding: "0.08em 0.3em", borderRadius: "0.3em", whiteSpace: "nowrap",
-          fontSize: `${TEXT.gloss}em`, background: `rgba(255,255,255,${0.75 * g})`,
-          borderBottom: `${px(3)} dashed rgba(31,27,22,${0.3 * (1 - g)})` }}>
-          {item.pos ? (
-            <span style={{ fontFamily: EN, fontWeight: 600, fontSize: "0.86em", marginRight: "0.25em",
-              color: `rgba(122,115,103,${g})` }}>{item.pos}</span>
-          ) : null}
-          <span style={{ fontFamily: ZH, fontWeight: 500, color: `rgba(31,27,22,${g})` }}>{item.gloss}</span>
+    <span data-piece="" style={{ whiteSpace: "nowrap", marginRight: room ? "0.6em" : undefined }}>
+      <span style={{ position: "relative" }}>
+        <span style={{ fontFamily: EN, fontWeight: C.enWeight, letterSpacing: "-0.02em", color: C.en,
+          background: C.word === "transparent" ? undefined : C.word, borderRadius: "0.18em",
+          padding: C.word === "transparent" ? undefined : "0 0.06em",
+          borderBottom: C.enLine || undefined }}>{tk.text}</span>
+        <span style={note(g)}>
+          {pos ? <span style={{ fontFamily: EN, fontWeight: 600 }}>{pos} </span> : null}
+          {item.gloss}
         </span>
       </span>
       {trailing}
-    </>
+    </span>
   );
 };

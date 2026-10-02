@@ -4,7 +4,6 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 EPISODES = ROOT / "episodes"
 VIDEO = ROOT / "video"
-WORKBENCH = ROOT / "workbench"
 CACHE = ROOT / ".cache"
 
 ECDICT_CSV = DATA / "ecdict.csv"

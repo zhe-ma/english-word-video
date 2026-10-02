@@ -41,3 +41,4 @@ batch/out/
 *.MP4
 *.mp4
 batch/video/node_modules/
+.remotion/

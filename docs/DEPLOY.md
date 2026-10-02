@@ -1,14 +1,14 @@
 # 部署文档：荧光笔手帐单词视频工作流
 
 本文说明如何在一台新机器上部署这条工作流，并在 Cursor 里一句话生产单词视频。
-工作流设计见 `docs/中英混读单词视频-技术调研.md`，日常命令见 `AGENTS.md`。工作台：`./vv serve`。
+工作流设计见 `docs/中英混读单词视频-技术调研.md`，日常命令见 `AGENTS.md`。批量出片：`batch/vb`。
 
 ---
 
 ## 1. 工作流概览
 
 ```
-Cursor Agent 或工作台（./vv serve）
+Cursor Agent 或命令行（batch/vb、./vv）
   ├─ ./vv plan / words        选题、查词（ECDICT 词库）
   ├─ 写 drafts.md → 毒舌评审子代理打分 → script.json
   ├─ ./vv validate            规则校验（Hook 在改完 script.json 后自动触发）
@@ -19,12 +19,11 @@ Cursor Agent 或工作台（./vv serve）
 
 | 组件 | 技术 | 位置 |
 |---|---|---|
-| 流水线 CLI / API | Python 3.10+（edge-tts、pyphen） | `pipeline/`，入口 `./vv` |
-| 工作台 | Vite + React | `workbench/`，`./vv serve` |
-| 视频模板 | Remotion 4 + React 18（Node 18+） | `video/` |
+| 流水线 CLI | Python 3.10+（edge-tts、pyphen） | `pipeline/`（`./vv`）、`batch/`（`batch/vb`） |
+| 视频模板 | Remotion 4 + React 18（Node 18+） | `batch/video/`（批量）、`video/`（旧版单期） |
 | 词库 | ECDICT（MIT） | `data/ecdict.csv` → `data/ecdict.db`（本机缓存，不进 git） |
 | 学习进度 | 已入库的 `episodes/*/script.json` | 有 `published_at` 即入库 |
-| Agent 配置 | Cursor Skill / Rule / Hook | `.cursor/`、`AGENTS.md` |
+| Agent 配置 | Cursor Rule / Hook | `.cursor/`、`AGENTS.md` |
 | 字体 | 思源黑体 Noto Sans SC、Poppins（OFL） | `video/public/fonts/` |
 
 不需要 GPU，也不需要任何付费 API。文案由 Cursor Agent 写，消耗的是 Cursor 订阅额度。
@@ -146,7 +145,7 @@ cd video && npx remotion still src/index.ts MarkerNotes /tmp/check.png --frame=2
 
 ```bash
 mkdir -p .cache/ep_test
-# 写一份 script.json（格式见 .cursor/skills/vocab-video/SKILL.md），然后：
+# 写一份 script.json（字段见 pipeline 里已有期的 script.json），然后：
 ./vv validate .cache/ep_test && ./vv tts .cache/ep_test && ./vv qa-audio .cache/ep_test
 ./vv render .cache/ep_test --no-cover && ./vv frames .cache/ep_test
 ```
@@ -157,7 +156,6 @@ mkdir -p .cache/ep_test
 
 1. 用 Cursor 打开项目根目录。
 2. 确认配置已加载：
-   - **Skill**：设置里能看到 `vocab-video`（来源：`.cursor/skills/vocab-video/SKILL.md`）。
    - **Rule**：`copywriting.mdc` 在编辑 `episodes/**/script.json` 和 `drafts.md` 时自动生效。
    - **Hook**：设置 → Hooks 里能看到 `afterFileEdit → .cursor/hooks/validate-script.sh`。
 3. 对 Agent 说：
@@ -167,7 +165,7 @@ mkdir -p .cache/ep_test
    做 3 期考研单词视频，主题你从选题库里挑
    ```
 
-   Agent 会按 Skill 走完“选词 → 3 稿 → 毒舌评审 → 校验 → 配音 → 渲染 → 看图质检 → 入库”，最后汇报成片路径。
+   批量文案走 `batch/README.md` 里的 `batch/vb`。旧版单期仍可用 `./vv`：选词、校验、配音、渲染、入库。
 4. Agent 执行 `tts`（联网）和 `render`（写 node_modules 缓存）时，如果被 Cursor 沙箱拦截，需要允许它在沙箱外运行。
 
 ### 无人值守（可选）
@@ -176,7 +174,7 @@ mkdir -p .cache/ep_test
 
 ```bash
 cd /path/to/vocab-video
-cursor-agent -p "按 vocab-video skill 做 3 期 CET-4 单词视频，主题从 data/themes.yaml 里挑未用过的"
+cursor-agent -p "按 batch/README.md 为一篇阅读出一组中英混读视频"
 ```
 
 - macOS 用 `launchd`，Linux 用 `crontab` 定时执行上面的命令。
@@ -246,9 +244,9 @@ BGM：把一首免版权 mp3 放到 `video/public/bgm/`，`./vv tts` 会自动�
 .
 ├── AGENTS.md / README.md
 ├── vv                            # CLI 入口
-├── pipeline/                     # Python CLI + 工作台 API
-├── workbench/                    # 可视化工作台
-├── video/                        # Remotion 模板
+├── pipeline/                     # 旧版单期 Python CLI
+├── batch/                        # 批量文案、校验、配音、渲染
+├── video/                        # 旧版单期 Remotion 模板
 ├── data/                         # 选题库、范文、黑名单、词库缓存
 ├── episodes/<id>/                # 每期文本与产物
 ├── docs/                         # 部署、调研、设计稿

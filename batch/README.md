@@ -71,36 +71,36 @@ paragraphs:                            # 每段是一个句子列表；句号 = 
 
 ## 文案格式（batch/scripts/）
 
+改文案、看静帧，都不改画面代码。卡片宽高按抖音安全区固定，字号按全文长短自动缩放。
+
 ```yaml
-defaults:                 # 可选，对整批生效，每期也可以单独覆盖
-  level: 考研             # 高考 / CET-4 / CET-6 / 考研 / 雅思 / 托福
-  passage: ../passages/2023-eng1-text1.yaml   # 原文 + 参考译文，相对本文件
-  # source: ...            不写则用 passage 里的 source
-  # series: 中英混读单词   左上角系列名
-  # voice: zh-CN-XiaoxiaoNeural   正文音色；review_voice 复习英文音色（默认 en-US-AriaNeural）
-  # rate: "+5%"
+defaults:
+  level: 雅思             # 高考 / CET-4 / CET-6 / 考研 / 雅思 / 托福
+  series: 职场黑话英语
+  voice: zh-CN-XiaoxiaoNeural
+  rate: "+5%"
 
 episodes:
-  # 原文第 1–2 段
-  - id: texas-climate-1   # 可选，默认 01、02…；用作输出目录名
-    title: 得州课堂，气候变化怎么教？（一）
-    cover: [得州课堂，, 气候变化怎么教？（一）]     # 可选，封面大标题分行，默认用 title
-    pages:                # 全文一页显示完；每一段是朗读单位，读到时由暗变亮
-      - text: 美国得克萨斯州的热浪刚退，州教育委员会的会议却火药味十足：官员们要debate得州学校该如何讲授气候变化。
-        src: 1.1          # 对应原文句号：2.1-2.2、3.1, 3.3；只写段号表示整段
-      - text: 委员帕特·哈迪sympathize能源行业的观点，正在resist一项科学课程标准的修改。
-        src: 2.1
-    items:                # 学习项：[英文, 词性, 语境释义]；短语的词性写「短语」
-      - [debate, v., 辩论]
-      - [sympathize, v., 认同]
-      - [resist, v., 抵制]
+  - id: lowperf-1         # 输出目录名；不写则是 01、02…
+    title: 大厂低绩效黑话：你只是没接住
+    cover: [大厂发低绩效时，, 最爱说的几句话]   # 可选，封面大标题分行
+    text: |               # 一行一段。学习词写成：英文 (词性. 语境释义)
+      大厂发 underperformance (n. 低绩效) 给你，最爱用 baseline (n. 底线) 话术打压。
+      领导常说：“你缺乏 ownership (n. 主人翁意识) 与 initiative (n. 主动性)，我很质疑你的 competency (n. 胜任力)。”
+      其实项目停滞是高层失误，却逼你 take the fall (短语. 背锅)，让你向内求。
 ```
 
-- 正文里直接写中英混读，英文前后不加空格、不加标记。连续英文会自动匹配学习项；屈折变化（recalled、had access to）自动认出，查不到的词形可在学习项第 4 位写出：`[recall, v., 回忆, [recalled]]`。
-- 正文里不属于学习项的英文会原样显示、不高亮，校验时给提醒。
-- 复习顺序就是 `items` 的顺序，建议和正文出现顺序一致。
-- 音标、音节、高亮颜色由脚本补全，不要写。
-- YAML 注意：`text` 不要以 `[`、`{`、`#` 开头；含英文冒号加空格（`: `）的内容要加引号。
+- 括号是给脚本看的，画面上不会出现在字的后面。正文只在单词下方注「词性 + 第一条释义」。
+- 词性写成 `n` / `v` / `adj` / `adv`，短语写 `短语`。
+- 更多释义用分号写在括号里，只出现在最后的词卡上：`(n. 低绩效；表现不佳)`。词卡还会补上词典里的其他义项和音标。
+- 一行是一段朗读。空行会被忽略。
+- 音标不用写。
+- 写完执行 `batch/vb stills <名字>` 出静帧。满意后再 `batch/vb build <名字>`。
+
+旧格式仍然能用：`pages` 里写不带括号的正文，`items` 里写 `[英文, 词性, 释义]`。同一期不要同时写 `text` 和 `pages`。有原文对照时，`pages` 的 `src` 仍然指向 `batch/passages/` 里的句号。
+
+- 屈折变化（recalled、had access to）自动认出。查不到的词形写在学习项第 4 位：`[recall, v., 回忆, [recalled]]`。
+- YAML 注意：含英文冒号加空格（`: `）的内容要加引号。
 
 ## 给 AI 的提示词
 

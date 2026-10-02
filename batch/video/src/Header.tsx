@@ -1,27 +1,28 @@
 import React from "react";
-import { C, EN, HL, LAYOUT, ZH } from "./theme";
+import { C, HEADER_LABEL, LAYOUT, UI, ZH } from "./theme";
 import type { Timeline } from "./types";
 
-/** 顶部：Vol 徽章、系列 · 级别、标题、学习项进度条。learned 为已读到的学习项数。 */
-export const Header: React.FC<{ tl: Timeline; learned: number }> = ({ tl, learned }) => (
-  <div style={{ position: "absolute", left: 60, right: 60, top: LAYOUT.headerTop, color: "#fff", fontFamily: ZH }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 18, fontSize: 30, fontWeight: 500, opacity: 0.85 }}>
-      {tl.vol ? (
-        <span style={{ background: "#fff", color: C.bg, borderRadius: 12, padding: "2px 14px", fontWeight: 800, fontFamily: EN }}>
-          Vol.{tl.vol}
-        </span>
-      ) : null}
-      {tl.series} · {tl.level}
-    </div>
-    <div style={{ fontSize: tl.title.length > 14 ? 54 : 62, fontWeight: 800, marginTop: 12, letterSpacing: 2, lineHeight: 1.25,
-      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+/** 栏目名：固定写「雅思单词学习」，细字、无底色胶囊。 */
+export const TopLabel: React.FC<{ style?: React.CSSProperties }> = ({ style }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: ZH, fontSize: UI.label, fontWeight: 500,
+    letterSpacing: 2, lineHeight: 1.15, color: C.onBg, ...style }}>
+    <span style={{ width: 10, height: 10, borderRadius: 5, background: C.accent }} />
+    {HEADER_LABEL}
+  </div>
+);
+
+const titleSize = (title: string) => {
+  const inner = 1080 - LAYOUT.cardLeft - LAYOUT.cardRight;
+  return Math.max(32, Math.min(52, Math.floor(inner / Math.max(title.length, 1))));
+};
+
+/** 顶部：栏目名 + 一行标题。标题不换行，避免挡住下面的卡片。 */
+export const Header: React.FC<{ tl: Timeline }> = ({ tl }) => (
+  <div style={{ position: "absolute", left: LAYOUT.cardLeft, right: LAYOUT.cardRight, top: LAYOUT.labelTop }}>
+    <TopLabel />
+    <div style={{ fontFamily: ZH, color: C.title, fontSize: titleSize(tl.title), fontWeight: 600,
+      marginTop: 8, letterSpacing: -0.4, lineHeight: 1.15, whiteSpace: "nowrap" }}>
       {tl.title}
-    </div>
-    <div style={{ display: "flex", gap: 14, marginTop: 18 }}>
-      {tl.items.map((w, i) => (
-        <i key={i} style={{ width: tl.items.length > 8 ? 52 : 60, height: 12, borderRadius: 6,
-          background: i < learned ? HL[w.color] : "rgba(255,255,255,.18)" }} />
-      ))}
     </div>
   </div>
 );

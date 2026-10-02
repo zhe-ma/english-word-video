@@ -1,0 +1,19 @@
+# 大厂低绩效话术 · 中英混读单词视频。文案格式见 batch/README.md。
+defaults:
+  level: 雅思
+  series: 职场黑话英语
+  source: 大厂低绩效话术实录
+  voice: zh-CN-XiaoxiaoNeural      # 正文中英混读
+  rate: "+5%"
+
+episodes:
+  - id: lowperf-1
+    title: 大厂低绩效黑话：你只是没接住
+    cover: [大厂发低绩效时，, 最爱说的几句话]
+    # 一行一段。学习词写成「英文 (词性. 语境释义)」，更多释义用分号接在后面，只出现在词卡。
+    text: |
+      大厂发 underperformance (n. 低绩效) 给你，最爱用 baseline (n. 底线) 话术打压。
+      领导常说：“你缺乏 ownership (n. 主人翁意识) 与 initiative (n. 主动性)，我很质疑你的 competency (n. 胜任力)。”
+      其实项目停滞是高层失误，却逼你 take the fall (短语. 背锅)，让你向内求。
+      大厂的 underlying logic (n. 底层逻辑) 很简单：只要 output (n. 产出)，完不成指标就找人 scapegoat (v. 背黑锅)。
+      这场 strategic (adj. 战略性) 的考核，不过是 layoff (n. 裁员) 前挑软柿子捏。

@@ -11,6 +11,8 @@ export type Item = {
   en: string;
   pos: string;
   gloss: string;
+  /** 词卡上的更多释义。正文只显示 gloss。 */
+  senses?: string[];
   kind: "word" | "phrase";
   ipa: string;
   syllables: string;
@@ -26,9 +28,8 @@ export type Timeline = {
   title: string;
   cover: string[];
   level: string;
-  /** 纸张底部的出处小字 */
+  /** 素材出处，只存档不显示 */
   source: string;
-  hint: string;
   items: Item[];
   pages: Page[];
   review: { start: number; end: number; groups: { start: number; end: number; entries: Entry[] }[] };

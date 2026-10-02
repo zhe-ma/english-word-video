@@ -39,8 +39,9 @@ def dict_row(word):
     con = _db()
     if con is None:
         return None
-    return con.execute("SELECT word, phonetic, tag, exchange FROM words WHERE word = ? COLLATE NOCASE",
-                       (word,)).fetchone()
+    return con.execute(
+        "SELECT word, phonetic, tag, exchange, translation FROM words WHERE word = ? COLLATE NOCASE",
+        (word,)).fetchone()
 
 
 IPA_FIX = str.maketrans({"'": "ˈ", ",": "ˌ", ".": "ˌ", ":": "ː", "ә": "ə", "g": "ɡ"})
@@ -50,6 +51,53 @@ def ipa(word):
     row = dict_row(word)
     p = (row["phonetic"] or "").strip() if row else ""
     return f"/{p.translate(IPA_FIX)}/" if p else ""
+
+
+_POS_ALIAS = {"adj": "a", "a": "a", "n": "n", "v": "v", "vt": "v", "vi": "v", "adv": "adv"}
+
+
+def dict_meanings(word, pos, limit=4):
+    """词典里同一词性的其他义项，供词卡展示。正文仍只用文案里的那一条。"""
+    row = dict_row(word)
+    if not row or not row["translation"]:
+        return []
+    want = _POS_ALIAS.get(str(pos or "").lower().split("/")[0].rstrip("."), "")
+    hit, rest = [], []
+    for line in row["translation"].split("\n"):
+        line = line.strip()
+        if not line or line.startswith("["):
+            continue
+        m = re.match(r"^([a-z]+)\.\s*", line, re.I)
+        line_pos = m.group(1).lower() if m else ""
+        text = line[m.end():] if m else line
+        matched = want and line_pos and (line_pos.startswith(want) or want.startswith(line_pos))
+        (hit if matched or not line_pos else rest).append(text)
+    lines = hit or rest
+    out = []
+    for text in lines:
+        for part in re.split(r"[，,;；]", text):
+            part = re.sub(r"\s+", "", part.strip())
+            if part and part not in out and len(part) <= 12:
+                out.append(part)
+            if len(out) >= limit:
+                return out
+    return out
+
+
+def review_senses(it, limit=3):
+    """词卡上的更多释义：文案里分号后面的，再加上词典里不同的义项。"""
+    gloss = it["gloss"]
+    out = []
+    for s in list(it.get("senses") or []):
+        if s and s != gloss and s not in out:
+            out.append(s)
+    if it["kind"] == "word" and len(out) < limit:
+        for s in dict_meanings(it["en"], it["pos"]):
+            if s != gloss and gloss not in s and s not in gloss and s not in out:
+                out.append(s)
+            if len(out) >= limit:
+                break
+    return out[:limit]
 
 
 @functools.lru_cache(maxsize=None)
@@ -93,25 +141,78 @@ def load_batch(path):
 
 # ---------- 规范化 ----------
 
+def split_gloss(gloss):
+    """「低绩效；表现不佳」→ 正文用第一条，其余留给词卡。"""
+    parts = [p.strip() for p in re.split(r"[；;]", str(gloss or "")) if p.strip()]
+    return (parts[0] if parts else ""), parts[1:]
+
+
 def parse_item(raw):
+    senses = []
     if isinstance(raw, (list, tuple)):
         vals = list(raw) + [None] * 4
         en, pos, gloss, forms = vals[0], vals[1], vals[2], vals[3]
     elif isinstance(raw, dict):
         en, pos, gloss, forms = raw.get("en"), raw.get("pos"), raw.get("gloss"), raw.get("forms")
+        senses = list(raw.get("senses") or [])
     else:
         raise BatchError(f"学习项格式不对：{raw!r}，用 [英文, 词性, 释义] 或 {{en, pos, gloss}}")
     en = re.sub(r"\s+", " ", str(en or "")).strip()
     if not en:
         raise BatchError(f"学习项缺少英文：{raw!r}")
     pos = str(pos or "").strip()
+    if pos not in PHRASE_POS and re.fullmatch(r"[A-Za-z][A-Za-z./]*", pos) and not pos.endswith("."):
+        pos += "."
+    gloss, extra = split_gloss(gloss)
     if isinstance(forms, str):
         forms = [forms]
     kind = "phrase" if " " in en or pos in PHRASE_POS else "word"
+    more = []
+    for s in list(senses) + extra:
+        s = str(s).strip()
+        if s and s != gloss and s not in more:
+            more.append(s)
     return {
-        "en": en, "pos": "" if pos in PHRASE_POS else pos, "gloss": str(gloss or "").strip(),
+        "en": en, "pos": "" if pos in PHRASE_POS else pos, "gloss": gloss, "senses": more,
         "kind": kind, "forms": [re.sub(r"\s+", " ", str(f)).strip() for f in (forms or []) if f],
     }
+
+
+# 英文 (词性. 释义；更多释义)。词性可以是 n / adj / v / 短语。
+MARK = re.compile(
+    r"([A-Za-z][A-Za-z'’-]*(?:\s+[A-Za-z][A-Za-z'’-]*)*)\s*[（(]\s*([^()）.．]{1,12}?)\s*[.．]\s*([^()）]+?)\s*[)）]"
+)
+
+
+def parse_marked_text(text):
+    """把带括号注释的正文拆成（纯正文行, 学习项）。一行一段。"""
+    items, seen = [], {}
+    pages = []
+
+    def repl(m):
+        en = re.sub(r"\s+", " ", m.group(1)).strip()
+        pos = m.group(2).strip()
+        gloss = m.group(3).strip()
+        key = en.lower()
+        if key in seen:
+            prev = items[seen[key]]
+            if prev["gloss"] != split_gloss(gloss)[0]:
+                raise BatchError(f"{en} 出现了两次，释义不一致")
+        else:
+            seen[key] = len(items)
+            items.append(parse_item([en, pos, gloss]))
+        return en
+
+    for line in str(text or "").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        pages.append(MARK.sub(repl, line))
+    if not pages:
+        raise BatchError("text 是空的")
+    if not items:
+        raise BatchError("text 里没有「英文 (词性. 释义)」，例如 baseline (n. 底线)")
+    return pages, items
 
 
 def item_keys(items):
@@ -229,10 +330,15 @@ def normalize(raw, index, defaults, base=SCRIPTS):
     psg = read_passage(ep["passage"]) if ep["passage"] else None
     ep["source"] = str(ep["source"] or (psg and psg["source"]) or DEFAULT_SOURCE).strip()
 
-    ep["items"] = [parse_item(it) for it in (raw.get("items") or [])]
+    if raw.get("text"):
+        page_texts, ep["items"] = parse_marked_text(raw.get("text"))
+        raw_pages = [{"text": t} for t in page_texts]
+    else:
+        ep["items"] = [parse_item(it) for it in (raw.get("items") or [])]
+        raw_pages = raw.get("pages") or []
     keys = item_keys(ep["items"])
     ep["pages"] = []
-    for p in raw.get("pages") or []:
+    for p in raw_pages:
         text, src = (p.get("text"), p.get("src")) if isinstance(p, dict) else (p, None)
         text = str(text or "")
         ep["pages"].append({"text": text, "tokens": tokenize(text, ep["items"], keys),

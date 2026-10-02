@@ -23,8 +23,7 @@ DEFAULTS = {
     "review_rate": "-10%",
     "gloss_voice": "zh-CN-XiaoxiaoNeural",  # 复习段中文释义
     "gloss_rate": "+0%",
-    "hint": "哪个词还不熟？评论区留个词",
-    "source": "",                           # 纸张底部的出处小字；不写则用原文文件里的 source
+    "source": "",                           # 素材出处，只存档不显示；不写则用原文文件里的 source
     "passage": "",                          # 真题原文 + 参考译文文件（batch/passages/），相对批量文件所在目录
 }
 DEFAULT_SOURCE = "出自考研真题"               # 既没写 source、也没有原文文件时

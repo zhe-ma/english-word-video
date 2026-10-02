@@ -1,10 +1,27 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
 import { continueRender, delayRender, getRemotionEnvironment } from "remotion";
 import { fontsReady } from "./fonts";
+import { TEXT } from "./theme";
+
+/** 除最后一行外，行尾空出超过两成宽度的行数。用来判断字号是否大到把词组挤到了下一行。 */
+const raggedLines = (root: HTMLElement) => {
+  const box = root.getBoundingClientRect();
+  const rows = new Map<number, number>();
+  root.querySelectorAll<HTMLElement>("[data-piece]").forEach((el) => {
+    for (const r of el.getClientRects()) {
+      const key = Math.round(r.top);
+      rows.set(key, Math.max(rows.get(key) ?? 0, r.right - box.left));
+    }
+  });
+  const ends = [...rows.entries()].sort((a, b) => a[0] - b[0]).map(([, right]) => right);
+  if (ends.length <= 1) return 0;
+  return ends.slice(0, -1).filter((right) => box.width - right > box.width * 0.22).length;
+};
 
 /**
- * 在 [min, max] 之间找能放下内容的最大 CSS 变量 --s（子元素字号都乘以它）：
- * 短文案放大填满，长文案缩小放下。字体加载完、容器有了宽度之后测量一次。
+ * 在卡片高度里选字号（--s）和行距（--lh）。
+ * 先用能放下注释的最小行距，取放得下的最大字号；若字号太大导致行尾大片空白，就略缩小，让一行排进更多字。
+ * 高度还有余，再把行距拉开，把卡片填满。
  */
 export const FitBox: React.FC<{ height: number; min?: number; max?: number; style?: React.CSSProperties; children: React.ReactNode }> = ({
   height, min = 0.5, max = 1, style, children,
@@ -29,11 +46,36 @@ export const FitBox: React.FC<{ height: number; min?: number; max?: number; styl
         requestAnimationFrame(fit);
         return;
       }
+      const lhMin = TEXT.lineHeight;
+      const lhMax = TEXT.lineHeightMax;
       let s = max;
       el.style.setProperty("--s", String(s));
+      el.style.setProperty("--lh", String(lhMin));
       while (el.scrollHeight > height + 1 && s > min) {
         s = Math.max(min, +(s - 0.02).toFixed(2));
         el.style.setProperty("--s", String(s));
+      }
+      let best = { s, rag: raggedLines(el) };
+      for (let step = 0; step < 8 && s - 0.02 >= min; step++) {
+        const next = +(s - 0.02).toFixed(2);
+        el.style.setProperty("--s", String(next));
+        if (el.scrollHeight > height + 1) break;
+        s = next;
+        const rag = raggedLines(el);
+        if (rag < best.rag) best = { s, rag };
+        if (rag === 0) break;
+      }
+      s = best.s;
+      el.style.setProperty("--s", String(s));
+      let lh = lhMin;
+      while (lh < lhMax) {
+        const next = Math.min(lhMax, +(lh + 0.04).toFixed(2));
+        el.style.setProperty("--lh", String(next));
+        if (el.scrollHeight > height + 1) {
+          el.style.setProperty("--lh", String(lh));
+          break;
+        }
+        lh = next;
       }
       finish();
     };

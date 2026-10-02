@@ -64,9 +64,6 @@ say "Python 虚拟环境（.venv）"
 say "Remotion 依赖（video/node_modules）"
 (cd video && npm ci --no-audit --no-fund)
 
-say "工作台依赖（workbench/node_modules）"
-(cd workbench && npm ci --no-audit --no-fund)
-
 say "下载 ECDICT 词库"
 mkdir -p data
 fetch "$GH_RAW/skywind3000/ECDICT/master/ecdict.csv" data/ecdict.csv 60000000
@@ -80,6 +77,10 @@ say "下载字体（OFL 可商用）"
 mkdir -p video/public/fonts
 fetch "$GH_RAW/google/fonts/main/ofl/poppins/Poppins-ExtraBold.ttf" video/public/fonts/Poppins-ExtraBold.ttf 100000
 fetch "$GH_RAW/google/fonts/main/ofl/poppins/Poppins-SemiBold.ttf" video/public/fonts/Poppins-SemiBold.ttf 100000
+fetch "https://fonts.gstatic.com/s/poppins/v24/pxiEyp8kv8JHgFVrFJA.ttf" video/public/fonts/Poppins-Regular.ttf 80000
+fetch "https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLGT9V1s.ttf" video/public/fonts/Poppins-Medium.ttf 80000
+fetch "https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmRTM.ttf" video/public/fonts/Nunito-SemiBold.ttf 80000
+fetch "https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDFwmRTM.ttf" video/public/fonts/Nunito-Bold.ttf 80000
 fetch "$GH_RAW/google/fonts/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf" video/public/fonts/NotoSansSC.ttf 15000000
 
 say "Remotion 渲染用浏览器（Chrome Headless Shell）"
@@ -100,4 +101,4 @@ if [[ $CHECK -eq 1 ]]; then
   fi
 fi
 
-say "安装完成。启动工作台：./vv serve　　或对 Agent 说：做 1 期 CET-4 单词视频"
+say "安装完成。批量出片：batch/vb check <名字>"

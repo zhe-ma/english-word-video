@@ -1,8 +1,12 @@
 import { continueRender, delayRender, staticFile } from "remotion";
 
 const FONTS: [family: string, file: string, weight: string][] = [
+  ["Poppins", "Poppins-Regular.ttf", "400"],
+  ["Poppins", "Poppins-Medium.ttf", "500"],
   ["Poppins", "Poppins-SemiBold.ttf", "600"],
-  ["Poppins", "Poppins-ExtraBold.ttf", "800"],
+  ["Poppins", "Poppins-Bold.ttf", "700"],
+  ["Nunito", "Nunito-SemiBold.ttf", "600"],
+  ["Nunito", "Nunito-Bold.ttf", "700"],
   ["Noto Sans SC", "NotoSansSC.ttf", "100 900"],
 ];
 
