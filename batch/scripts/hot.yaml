@@ -1,0 +1,46 @@
+# 三篇更冲的话题，带反转。语速比上一篇再快一档。
+defaults:
+  level: 雅思
+  series: 职场黑话英语
+  source: 调试
+  voice: zh-CN-XiaoxiaoNeural
+  rate: "+32%"
+  review_rate: "+24%"
+  gloss_rate: "+28%"
+
+episodes:
+  - id: "01"
+    title: 你写的方案，先把你优化了
+    cover: [方案是你写的，, 优化的也是你]
+    text: |
+      公司买了套新系统，说是来 empower (v. 赋能) 你。
+      你把饭碗喂给它，它管这叫 training (n. 训练)。
+      三天你就过时了，专业名词叫 obsolete (adj. 过时的)。
+      老板鼓掌，说这就是 efficiency (n. 效率)，效率高到不用给你发工资。
+      交接写到半夜，不叫加班，叫 handover (n. 交接)。
+      公示温暖得很，暖的是 redundancy (n. 裁冗)。
+      方案是你写的，被方案开掉的也是你。
+
+  - id: "02"
+    title: 研究生没考上，还款人考上了
+    cover: [研究生没考上，, 还款人考上了]
+    text: |
+      二战三战，你攻下的不是专业课，是 installment (n. 分期付款)。
+      简章管这叫 investment (n. 自我投资)，投资人是你爸。
+      十次模考，名次没动，这叫 stagnation (n. 停滞)。
+      班主任说你差点火候，火候不在他的提成里。
+      出分那晚机构先庆功，你邮箱里躺着 rejection (n. 拒信)。
+      学费没白交，它长成了 debt (n. 债务)，每月准时想起你。
+      研究生没考上，还款人倒是考上了。
+
+  - id: "03"
+    title: 自愿留下来，也自愿被请走
+    cover: [自愿留下来，, 也自愿被请走]
+    text: |
+      群里那句自愿，翻译过来是 obligation (n. 义务)。
+      凌晨的灯不叫剥削，叫 dedication (n. 奉献)。
+      晚饭没有，有一句辛苦了，这顿叫 overtime (n. 加班)。
+      你想准点走，就被说缺少 cohesion (n. 凝聚力)。
+      名单很公平，公平地把你标成 expendable (adj. 可牺牲的)。
+      留下的人转发鸡汤，走的人还得微笑签字。
+      自愿进来的，离开协议上也印着自愿。

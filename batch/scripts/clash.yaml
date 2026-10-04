@@ -1,0 +1,23 @@
+# 调试用。话题单独写，不沿用前面的大厂黑话。
+defaults:
+  level: 雅思
+  series: 职场黑话英语
+  source: 调试
+  voice: zh-CN-XiaoxiaoNeural
+  rate: "+20%"
+  review_rate: "+12%"
+  gloss_rate: "+18%"
+
+episodes:
+  - id: "01"
+    title: 三十五岁报废，六十五岁续命
+    cover: [三十五岁就报废，, 六十五岁还得干]
+    text: |
+      三十五岁人还在，保质期到了，你这种人叫 disposable (adj. 可丢弃的)。
+      履历越厚越像 liability (n. 累赘)，公司怕你贵，不怕你能干。
+      真正的通知不写开除，写 downsizing (n. 缩编)，好像你是多出来的零件。
+      全文没有一句人话，全是 euphemism (n. 委婉语)，把扔人写成调整结构。
+      这边刚把你清空，那边就劝你干到领 pension (n. 养老金)。
+      你的黄金十年不叫奋斗，叫 burnout (n. 燃尽)，燃完就换下一批。
+      临走赏你一点 severance (n. 遣散费)，还得发朋友圈感谢培养。
+      人设了保质期，利润没有。

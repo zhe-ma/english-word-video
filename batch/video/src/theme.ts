@@ -99,7 +99,7 @@ export const HL = {
 export const ANNO = { pos: P.pos, ipa: P.ipa, gloss: P.gloss, gap: "0.1em" };
 
 export const HEADER_LABEL = "雅思单词学习";
-export const FOOTER_HINT = "不熟悉的单词，评论区打出来";
+export const FOOTER_HINT = "中过招的，评论区打1";
 
 export const ZH = `"Noto Sans SC", "PingFang SC", "Source Han Sans SC", sans-serif`;
 export const EN = P.enFont;

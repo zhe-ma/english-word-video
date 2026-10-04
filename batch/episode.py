@@ -147,6 +147,18 @@ def split_gloss(gloss):
     return (parts[0] if parts else ""), parts[1:]
 
 
+# 文案括号末尾可以写音标：gloss /ˈaɪpiːeɪ/。没有就继续用词典。
+_IPA_TAIL = re.compile(r"\s*(/[^/\s][^/]*/)\s*$")
+
+
+def peel_ipa(gloss):
+    text = str(gloss or "").strip()
+    m = _IPA_TAIL.search(text)
+    if not m:
+        return text, ""
+    return text[: m.start()].strip(), m.group(1)
+
+
 def parse_item(raw):
     senses = []
     if isinstance(raw, (list, tuple)):
@@ -192,15 +204,20 @@ def parse_marked_text(text):
     def repl(m):
         en = re.sub(r"\s+", " ", m.group(1)).strip()
         pos = m.group(2).strip()
-        gloss = m.group(3).strip()
+        gloss, ipa_text = peel_ipa(m.group(3).strip())
         key = en.lower()
         if key in seen:
             prev = items[seen[key]]
             if prev["gloss"] != split_gloss(gloss)[0]:
                 raise BatchError(f"{en} 出现了两次，释义不一致")
+            if ipa_text and not prev.get("ipa"):
+                prev["ipa"] = ipa_text
         else:
             seen[key] = len(items)
-            items.append(parse_item([en, pos, gloss]))
+            item = parse_item([en, pos, gloss])
+            if ipa_text:
+                item["ipa"] = ipa_text
+            items.append(item)
         return en
 
     for line in str(text or "").splitlines():

@@ -1,0 +1,24 @@
+# 老板随口一句，中层当圣旨，下面熬完，上面没看。
+defaults:
+  level: 雅思
+  series: 职场黑话英语
+  source: 调试
+  voice: zh-CN-XiaoxiaoNeural
+  rate: "+32%"
+  review_rate: "+24%"
+  gloss_rate: "+28%"
+
+episodes:
+  - id: "01"
+    title: 老板一句话，中层当圣旨
+    cover: [老板一句话，, 中层当圣旨]
+    text: |
+      老板吃饭时随口说了句：这个方向，回头可以弄弄。
+      中层连夜开会，把这句闲话听成了 directive (n. 指示)。
+      群里马上定了 deadline (n. 截止日期)，周六周日都得来。
+      中层怕担责，要求一层层加码，这叫 escalation (n. 加码)。
+      下面的人改到第七版，人已经 exhaustion (n. 精疲力尽)，话都不想说。
+      熬过的那些夜，最后只剩一张 overtime (n. 加班) 记录。
+      老板回了四个字：先放着。方案就此 pending (n. 待定)。
+      中层转头说，老板高度重视，今晚再赶一版。
+      三周过去，那封邮件还是未读。

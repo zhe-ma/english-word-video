@@ -19,7 +19,7 @@ from .episode import PHRASE_POS, ipa, review_senses
 
 HANZI = re.compile(r"[\u4e00-\u9fff]")
 HYPH = pyphen.Pyphen(lang="en_US")
-TIMELINE_VERSION = 3
+TIMELINE_VERSION = 4
 
 
 # ---------- 合成与缓存 ----------
@@ -167,7 +167,29 @@ def align_items(tokens, marks, dur):
 
 # ---------- 组装 ----------
 
+# 屏幕注释用的音标。词典音标缺字、重音也不稳，这几个按文案里的读音写死。
+IPA_OVERRIDE = {
+    "ownership": "/ˈəʊnəʃɪp/",
+    "underperformance": "/ˌʌndəpəˈfɔːməns/",
+    "initiative": "/ɪˈnɪʃətɪv/",
+    "competency": "/ˈkɒmpɪtənsi/",
+    "take the blame": "/teɪk ðə bleɪm/",
+    "scapegoat": "/ˈskeɪpɡəʊt/",
+    "underlying logic": "/ˈʌndəlaɪɪŋ ˈlɒdʒɪk/",
+    "layoff": "/ˈleɪɒf/",
+    "downsizing": "/ˈdaʊnsaɪzɪŋ/",
+    "burnout": "/ˈbɜːnaʊt/",
+    "severance": "/ˈsevərəns/",
+}
+
+
 def item_ipa(it):
+    written = str(it.get("ipa") or "").strip()
+    if written:
+        return written
+    fixed = IPA_OVERRIDE.get(it["en"].lower())
+    if fixed:
+        return fixed
     if it["en"].lower() == "competency":
         return "/ˈkɒmpɪtənsi/"
     if it["kind"] == "word":

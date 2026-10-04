@@ -31,13 +31,13 @@ DEFAULT_SOURCE = "出自考研真题"               # 既没写 source、也没�
 LEVEL_TAGS = {"高考": "gk", "CET-4": "cet4", "CET-6": "cet6", "考研": "ky", "雅思": "ielts", "托福": "toefl"}
 
 # 节奏（秒）
-LEAD_IN = 0.25        # 第一帧就有正文，声音稍后进入
-PAGE_GAP = 0.45       # 页间静音，翻页动画落在这里
-REVIEW_GAP = 0.7      # 正文结束到复习
-GROUP_LEAD = 0.35     # 每组复习出现后再开口
-EN_ZH_GAP = 0.25      # 英文与中文释义之间
-ITEM_GAP = 0.45       # 复习项之间
-OVERVIEW_HOLD = 1.8   # 结尾全文高亮帧停留
+LEAD_IN = 1.0         # 封面先停一秒，再进正文
+PAGE_GAP = 0.08       # 句与句之间几乎不留白
+REVIEW_GAP = 0.1      # 正文结束到词卡
+GROUP_LEAD = 0.06     # 词卡落地后马上开口
+EN_ZH_GAP = 0.06      # 英文与中文释义之间
+ITEM_GAP = 0.08       # 复习项之间
+OVERVIEW_HOLD = 0.45  # 词卡最后再停一下
 
 REVIEW_GROUP_MAX = 5
 

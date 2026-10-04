@@ -1,0 +1,22 @@
+# 用户至上，做产品全凭老板高兴。
+defaults:
+  level: 雅思
+  series: 职场黑话英语
+  source: 调试
+  voice: zh-CN-XiaoxiaoNeural
+  rate: "+32%"
+  review_rate: "+24%"
+  gloss_rate: "+28%"
+
+episodes:
+  - id: "01"
+    title: "“用户至上”，做产品全凭“老板高兴”"
+    cover: ["“用户至上”，做产品全凭“老板高兴”"]
+    text: |
+      天天高喊 user-centric (adj. 以用户为中心的 /ˈjuːzə ˈsentrɪk/) ，全是一块粉饰太平的遮羞布。
+      产品经理调研时满口用户痛点，一到评审会立刻变成 obsequious (adj. 谄媚逢迎的 /əbˈsiːkwiəs/) 的汇报机器。
+      哪怕数据证明方案再完美，只要高层一个眉头，所有的心血都会遭到 veto (v. 否决/拒绝 /ˈviːtəʊ/)。
+      大厂做产品的真实逻辑其实叫 boss-oriented (adj. 老板导向的 /bɒs ˈɔːrientɪd/)，改用老板的审美代替市场的真实反馈。
+      这种流水线作业的 absurdity (n. 荒谬荒诞 /əbˈsɜːdəti/) 就在于：你的核心任务只是去满足老板个人反复无常的偏好。
+      所谓的敏捷迭代，不过是在高层那些 capricious (adj. 反复无常的/善变的 /kəˈprɪʃəs/) 的指令里，自我感动的无意义 redundancy (n. 形式主义的穷忙 /rɪˈdʌndənt/)。
+      在这场荒唐的游戏里，你不得不逼自己去 compromise (v. 妥协/让步 /ˈkɒmprəmaɪz/)，眼睁睁看着产品被改得面目全非。
