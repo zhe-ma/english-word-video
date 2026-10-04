@@ -238,41 +238,6 @@ const Mark: React.FC = () => (
   </div>
 );
 
-const Hero: React.FC<{ page: Page; items: Item[]; t: number }> = ({ page, items, t }) => {
-  const parts = piecesOf(page);
-  const word = parts.find((p) => p.word);
-  const item = word?.word ? items[word.word.i] : undefined;
-  const rest = parts
-    .filter((p) => p !== word)
-    .map((p) => p.text)
-    .join("")
-    .replace(/^[，,。！？、\s]+/, "");
-  const chars = [...rest];
-  const typeFrom = word?.word?.end ?? page.start;
-  const typeDur = Math.min(0.5, Math.max(0.28, (page.end - typeFrom) * 0.4));
-  const shown = t < typeFrom ? 0 : Math.min(chars.length, Math.ceil(clamp01((t - typeFrom) / typeDur) * chars.length));
-  const hit = impact(t - page.start);
-  return (
-    <Center>
-      {word?.text ? (
-        <div style={{ transform: `translateX(${hit.x}px) scale(${hit.scale})`, transformOrigin: "50% 50%" }}>
-          <div style={{ fontFamily: EN, fontWeight: 700, fontSize: fitEn(word.text, 108), lineHeight: 1.05, color: YELLOW, letterSpacing: "-0.03em" }}>
-            {word.text}
-          </div>
-        </div>
-      ) : null}
-      {item ? (
-        <div style={{ marginTop: 18 }}>
-          <Note item={item} size={48} />
-        </div>
-      ) : null}
-      <div style={{ marginTop: 32, maxWidth: BOX, fontFamily: ZH, fontWeight: 700, fontSize: fitBlock(rest, 72, 44, BOX_H * 0.42), lineHeight: 1.4, color: zhTone(rest) }}>
-        {chars.slice(0, shown).join("")}
-      </div>
-    </Center>
-  );
-};
-
 const BeatView: React.FC<{ beat: Beat; items: Item[]; t: number }> = ({ beat, items, t }) => {
   const age = t - beat.from;
   if (beat.kind === "word") {
@@ -437,8 +402,7 @@ const Poster: React.FC<{ tl: Timeline }> = ({ tl }) => {
 export const Stage: React.FC<{ tl: Timeline; t: number | null }> = ({ tl, t }) => {
   const coverUntil = tl.pages[0]?.start ?? 1;
   if (t === null || t < coverUntil) return <Poster tl={tl} />;
-  const body = tl.pages.slice(1);
-  const beats = body.flatMap(pageBeats);
+  const beats = tl.pages.flatMap(pageBeats);
   const reviewAt = tl.review.start;
   if (t !== null && t >= reviewAt) {
     return (
@@ -450,14 +414,12 @@ export const Stage: React.FC<{ tl: Timeline; t: number | null }> = ({ tl, t }) =
   }
 
   const now = t ?? 2.2;
-  const heroUntil = tl.pages[1]?.start ?? reviewAt;
   const zoom = t === null ? 1 : interpolate(now, [coverUntil, reviewAt], [1, 1.03], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const beat = now >= heroUntil ? holdBeat(beats, now) : null;
+  const beat = holdBeat(beats, now);
 
   return (
     <AbsoluteFill style={{ background: BG }}>
       <div style={{ position: "absolute", inset: 0, transform: `scale(${zoom})`, transformOrigin: "50% 46%" }}>
-        {tl.pages[0] && now < heroUntil ? <Hero page={tl.pages[0]} items={tl.items} t={now} /> : null}
         {beat ? <BeatView key={beat.from} beat={beat} items={tl.items} t={now} /> : null}
       </div>
       <Mark />
