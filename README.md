@@ -27,11 +27,11 @@ python scripts/vb.py build  examples/sample.yaml
 
 ## 发布
 
-压缩包只含 skill 本身，不含 `.git`、`.workbuddy`、`design/`。先提交所有改动，再在仓库根目录运行：
+压缩包只含 skill 本身，不含 `.git`、`.workbuddy`、`design/`、`AGENTS.md`、`.gitignore`。先提交所有改动，再在仓库根目录运行：
 
 ```bash
 mkdir -p dist
-git archive --format=zip -9 --prefix=english-word-video/ -o dist/english-word-video.zip HEAD -- . ':(exclude).workbuddy' ':(exclude)design'
+git archive --format=zip -9 --prefix=english-word-video/ -o dist/english-word-video.zip HEAD -- . ':(exclude).workbuddy' ':(exclude)design' ':(exclude)AGENTS.md' ':(exclude).gitignore'
 ```
 
 当前约 2.0MB（WorkBuddy 上限 3MB，改字体或词库前先量一下）。包内是 `english-word-video/SKILL.md` 的目录结构，与开放平台文档的技能基础结构一致；如果平台解析失败，试试不带 `--prefix` 的版本（`SKILL.md` 放在压缩包根目录）。
