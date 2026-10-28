@@ -1,3 +1,0 @@
-edge-tts==7.2.8
-pyphen==0.18.1
-PyYAML==6.0.2

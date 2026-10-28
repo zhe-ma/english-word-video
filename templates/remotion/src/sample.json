@@ -1,0 +1,288 @@
+{
+ "id": "monday-1",
+ "series": "雅思单词学习",
+ "title": "周一早八，我的大脑还在加载",
+ "cover": [
+  "周一早八，",
+  "我的大脑还在加载"
+ ],
+ "footer": "不熟悉的单词，评论区打出来",
+ "items": [
+  {
+   "en": "motivation",
+   "pos": "n.",
+   "gloss": "干劲",
+   "senses": [
+    "动机",
+    "刺激",
+    "推动"
+   ],
+   "kind": "word",
+   "ipa": "/ˌməutiˈveiʃən/",
+   "syllables": "mo · ti · va · tion",
+   "color": "yellow"
+  },
+  {
+   "en": "negotiate",
+   "pos": "v.",
+   "gloss": "谈判",
+   "senses": [
+    "商议",
+    "交涉",
+    "谈妥"
+   ],
+   "kind": "word",
+   "ipa": "/niˈɡəuʃieit/",
+   "syllables": "ne · go · ti · ate",
+   "color": "yellow"
+  },
+  {
+   "en": "competition",
+   "pos": "n.",
+   "gloss": "竞赛",
+   "senses": [
+    "竞争"
+   ],
+   "kind": "word",
+   "ipa": "/ˌkɒmpiˈtiʃən/",
+   "syllables": "com · pe · ti · tion",
+   "color": "yellow"
+  },
+  {
+   "en": "compress",
+   "pos": "v.",
+   "gloss": "压缩",
+   "senses": [
+    "压紧"
+   ],
+   "kind": "word",
+   "ipa": "/kəmˈpres/",
+   "syllables": "com · press",
+   "color": "yellow"
+  },
+  {
+   "en": "efficiency",
+   "pos": "n.",
+   "gloss": "效率",
+   "senses": [
+    "效能",
+    "功效"
+   ],
+   "kind": "word",
+   "ipa": "/iˈfiʃənsi/",
+   "syllables": "ef · fi · cien · cy",
+   "color": "yellow"
+  },
+  {
+   "en": "schedule",
+   "pos": "v.",
+   "gloss": "安排",
+   "senses": [
+    "预定",
+    "编制目录",
+    "制...表"
+   ],
+   "kind": "word",
+   "ipa": "/ˈskedʒuəl/",
+   "syllables": "sched · ule",
+   "color": "yellow"
+  },
+  {
+   "en": "deadline",
+   "pos": "n.",
+   "gloss": "截止时间",
+   "senses": [
+    "最后期限",
+    "截止期限"
+   ],
+   "kind": "word",
+   "ipa": "/ˈdedlain/",
+   "syllables": "dead · line",
+   "color": "yellow"
+  }
+ ],
+ "pages": [
+  {
+   "start": 0.25,
+   "end": 6.25,
+   "tokens": [
+    {
+     "t": "周一闹钟响到第五遍，我的"
+    },
+    {
+     "i": 0,
+     "text": "motivation",
+     "start": 2.808,
+     "end": 3.442
+    },
+    {
+     "t": "还躺在被窝里跟自己"
+    },
+    {
+     "i": 1,
+     "text": "negotiate",
+     "start": 5.548,
+     "end": 6.182
+    },
+    {
+     "t": "。"
+    }
+   ]
+  },
+  {
+   "start": 6.7,
+   "end": 11.3,
+   "tokens": [
+    {
+     "t": "地铁挤得像一场"
+    },
+    {
+     "i": 2,
+     "text": "competition",
+     "start": 8.371,
+     "end": 9.011
+    },
+    {
+     "t": "，我被"
+    },
+    {
+     "i": 3,
+     "text": "compress",
+     "start": 9.538,
+     "end": 9.858
+    },
+    {
+     "t": "成了一张照片。"
+    }
+   ]
+  },
+  {
+   "start": 11.75,
+   "end": 16.75,
+   "tokens": [
+    {
+     "t": "老板说要提高"
+    },
+    {
+     "i": 4,
+     "text": "efficiency",
+     "start": 13.195,
+     "end": 13.837
+    },
+    {
+     "t": "，于是"
+    },
+    {
+     "i": 5,
+     "text": "schedule",
+     "start": 14.365,
+     "end": 14.846
+    },
+    {
+     "t": "了一个两小时的会。"
+    }
+   ]
+  },
+  {
+   "start": 17.2,
+   "end": 20.2,
+   "tokens": [
+    {
+     "t": "会议主题是：如何减少无效会议。"
+    }
+   ]
+  },
+  {
+   "start": 20.65,
+   "end": 24.95,
+   "tokens": [
+    {
+     "t": "散会一看表，"
+    },
+    {
+     "i": 6,
+     "text": "deadline",
+     "start": 21.869,
+     "end": 22.352
+    },
+    {
+     "t": "到了，今天的活儿还没开始。"
+    }
+   ]
+  }
+ ],
+ "review": {
+  "start": 25.65,
+  "end": 42.96,
+  "groups": [
+   {
+    "start": 25.65,
+    "entries": [
+     {
+      "i": 0,
+      "start": 26.0,
+      "enEnd": 27.15,
+      "end": 28.02
+     },
+     {
+      "i": 1,
+      "start": 28.47,
+      "enEnd": 29.62,
+      "end": 30.49
+     },
+     {
+      "i": 2,
+      "start": 30.94,
+      "enEnd": 32.09,
+      "end": 32.96
+     },
+     {
+      "i": 3,
+      "start": 33.41,
+      "enEnd": 34.06,
+      "end": 34.93
+     }
+    ],
+    "end": 35.38
+   },
+   {
+    "start": 35.38,
+    "entries": [
+     {
+      "i": 4,
+      "start": 35.73,
+      "enEnd": 36.88,
+      "end": 37.75
+     },
+     {
+      "i": 5,
+      "start": 38.2,
+      "enEnd": 39.1,
+      "end": 39.97
+     },
+     {
+      "i": 6,
+      "start": 40.42,
+      "enEnd": 41.32,
+      "end": 42.51
+     }
+    ],
+    "end": 42.96
+   }
+  ]
+ },
+ "overview": {
+  "start": 42.96,
+  "end": 44.76
+ },
+ "fps": 30,
+ "durationInFrames": 1343,
+ "estimated": true,
+ "stats": {
+  "body": 24.7,
+  "review": 17.31,
+  "total": 44.76,
+  "interp": []
+ },
+ "hash": "8f0630b117cc"
+}

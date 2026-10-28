@@ -1,0 +1,16 @@
+# 示例文案：python scripts/vb.py check examples/sample.yaml
+defaults:
+  level: 雅思                  # 校验用：学习词不在该级别词表里会提醒
+  series: 雅思单词学习          # 画面左上角栏目名
+
+episodes:
+  - id: monday-1               # 输出目录名，只用字母、数字、短横线
+    title: 周一早八，我的大脑还在加载
+    cover: [周一早八，, 我的大脑还在加载]   # 封面大标题，可分行，每行不超过 11 个字
+    # 一行一段。学习词写成「英文 (词性. 本文语境里的释义)」，词性写 n / v / adj / adv，短语写「短语」。
+    text: |
+      周一闹钟响到第五遍，我的 motivation (n. 干劲) 还躺在被窝里跟自己 negotiate (v. 谈判)。
+      地铁挤得像一场 competition (n. 竞赛)，我被 compress (v. 压缩) 成了一张照片。
+      老板说要提高 efficiency (n. 效率)，于是 schedule (v. 安排) 了一个两小时的会。
+      会议主题是：如何减少无效会议。
+      散会一看表，deadline (n. 截止时间) 到了，今天的活儿还没开始。
