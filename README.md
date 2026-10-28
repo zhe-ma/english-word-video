@@ -27,4 +27,4 @@ python scripts/vb.py build  examples/sample.yaml
 
 ## 发布
 
-整个目录打成 zip（不含 `.git`、`.workbuddy`、`examples/sample/`）即可，`SKILL.md` 的 frontmatter 已按开放平台规范填写。
+整个目录打成 zip（不含 `.git`、`.workbuddy`）即可，当前约 2.0MB（WorkBuddy 上限 3MB，改字体或词库前先量一下）。打包命令：`git ls-files | grep -v '^.workbuddy' | zip -9 ../english-word-video.zip -@`。`SKILL.md` 的 frontmatter 已按开放平台规范填写。
