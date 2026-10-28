@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh">
+<meta charset="utf-8">
+<style>
+  /* 图标源文件：512x512。渲染方法见 README「图标」。字体复用模板里的内置字体。 */
+  @font-face { font-family: "Noto Sans SC"; src: url("../templates/remotion/public/fonts/NotoSansSC.woff2"); font-weight: 400 700; }
+  @font-face { font-family: "Poppins"; src: url("../templates/remotion/public/fonts/Poppins-Bold.woff2"); font-weight: 700; }
+  html, body { margin: 0; width: 512px; height: 512px; overflow: hidden; }
+  .icon { position: relative; width: 512px; height: 512px; background: radial-gradient(circle at 30% 20%, #3C3733 0%, #2A2724 70%); }
+  .card { position: absolute; left: 76px; top: 84px; width: 360px; height: 344px; border-radius: 64px; background: #F7F4EF;
+          box-shadow: 0 22px 48px rgba(0,0,0,.38); }
+  .zh { position: absolute; left: 38px; top: 10px; font: 600 172px/1.1 "Noto Sans SC"; color: #333; }
+  .en { position: absolute; left: 40px; top: 192px; font: 700 84px/1 "Poppins"; color: #002FA7; letter-spacing: -2px; }
+  .note { position: absolute; left: 44px; top: 300px; height: 14px; border-radius: 7px; background: #CFCAC2; }
+  .play { position: absolute; left: 346px; top: 330px; width: 124px; height: 124px; border-radius: 62px; background: #002FA7;
+          box-shadow: 0 14px 30px rgba(0,0,0,.4), 0 0 0 10px #2A2724; }
+  .play::after { content: ""; position: absolute; left: 47px; top: 35px; border-left: 46px solid #fff; border-top: 27px solid transparent; border-bottom: 27px solid transparent; }
+</style>
+<div class="icon">
+  <div class="card">
+    <div class="zh">词</div>
+    <div class="en">word</div>
+    <div class="note" style="width:150px"></div>
+  </div>
+  <div class="play"></div>
+</div>

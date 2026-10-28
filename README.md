@@ -27,4 +27,20 @@ python scripts/vb.py build  examples/sample.yaml
 
 ## 发布
 
-整个目录打成 zip（不含 `.git`、`.workbuddy`）即可，当前约 2.0MB（WorkBuddy 上限 3MB，改字体或词库前先量一下）。打包命令：`git ls-files | grep -v '^.workbuddy' | zip -9 ../english-word-video.zip -@`。`SKILL.md` 的 frontmatter 已按开放平台规范填写。
+压缩包只含 skill 本身，不含 `.git`、`.workbuddy`、`design/`。先提交所有改动，再在仓库根目录运行：
+
+```bash
+mkdir -p dist
+git archive --format=zip -9 --prefix=english-word-video/ -o dist/english-word-video.zip HEAD -- . ':(exclude).workbuddy' ':(exclude)design'
+```
+
+当前约 2.0MB（WorkBuddy 上限 3MB，改字体或词库前先量一下）。包内是 `english-word-video/SKILL.md` 的目录结构，与开放平台文档的技能基础结构一致；如果平台解析失败，试试不带 `--prefix` 的版本（`SKILL.md` 放在压缩包根目录）。
+
+### 图标
+
+`design/icon.html` 是 512×512 图标的源文件，字体复用模板里的内置字体。重新渲染（需先 `setup` 过，用到 Remotion 下载的 headless 浏览器）：
+
+```bash
+B=$(ls ~/.english-word-video/remotion/node_modules/.remotion/chrome-headless-shell/*/*/chrome-headless-shell)
+"$B" --no-sandbox --hide-scrollbars --force-device-scale-factor=1 --allow-file-access-from-files --window-size=512,512 --virtual-time-budget=3000 --screenshot=dist/icon-512.png file://$PWD/design/icon.html
+```

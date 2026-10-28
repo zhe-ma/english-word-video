@@ -2,9 +2,9 @@
 name: english-word-video
 display_name: 中英混读单词视频
 display_name_en: English Word Video Maker
-description: 把一段文字或一个主题做成竖屏「中英混读单词」短视频（1080x1920，含配音、音标词性释义注释、词卡复习和封面）。词汇等级可选（高考、四六级、考研、雅思、托福或不限）。当用户要求做单词视频、背单词短视频、中英混读视频、把文章或一段话做成学英语短视频，或给了主题让 AI 写文案并出视频时使用。
-description_zh: 输入一段文字或主题，自动写成中英混读文案、配音并渲染成竖屏单词短视频和封面。
-description_en: Turn a passage or a topic into a vertical Chinese-English mixed-reading vocabulary video with voiceover, highlighted annotations, flashcard review and cover image.
+description: 低 token 成本生成竖屏「中英混读单词」短视频：AI 只写一份几百字的文案，配音、音标词性释义标注、词卡复习、封面和渲染全部由本地脚本完成，不调用生图或生视频模型。词汇等级可选（高考、四六级、考研、雅思、托福或不限）。当用户要求做单词视频、背单词短视频、中英混读视频、把文章或一段话做成学英语短视频，或给了主题让 AI 写文案并出视频时使用。
+description_zh: 一句话做出带配音、音标和词卡复习的单词短视频。AI 只写几百字文案，配音和渲染全在本地完成，省 token、免费、免 key。
+description_en: Token-efficient vertical vocabulary videos with voiceover, IPA, part of speech, meanings, flashcard review and a cover. The AI writes only a short script; voiceover and rendering run locally, with no image or video generation models.
 examples_zh:
   - "把这段话做成一条单词短视频：……"
   - "帮我写一条吐槽周一通勤的单词视频，用四级词汇"
@@ -22,6 +22,19 @@ author: 马哲
 正文以中文叙述，5–7 个英文学习词原位嵌入句子，配音读到时高亮并在词下方显示「音标 + 词性 + 释义」，结尾逐个复习词卡。输出 1080×1920 竖屏 mp4 和封面 png，约 40–70 秒。
 
 你负责**写文案**，脚本负责**校验、配音、渲染**。脚本不会替你写稿，也不会翻译。
+
+## 为什么省 token
+
+一条视频里，模型只做一件事：写一份几百字的 yaml 文案。其余全部在本地由脚本完成，不占模型上下文：
+
+- 配音（edge-tts，免费、免 key）、响度归一、时间轴对齐、高亮时间戳。
+- 音标、词性、词典义项（内置词库查询，不靠模型回忆）。
+- 排版、自适应字号、封面、视频渲染。
+- 校验：格式、学习词是否在正文出现、释义长短、多音词、半角标点等规则检查，命令只回传 `✗` / `!` 摘要。
+
+没有调用任何生图或生视频模型。改文案后重跑，没变的段落配音直接走缓存。实际消耗取决于文案长短和修改轮数。
+
+为保持精简：先读 SKILL.md；只在写稿时读 @references/copywriting.md；格式细节和报错处理在需要时才读 @references/script-format.md。
 
 `<SKILL_DIR>` 指本文件所在目录。命令统一写成 `python scripts/vb.py …`（在 `<SKILL_DIR>` 下运行；macOS / Linux 用 `python3`，Windows 用 `python` 或 `py -3`）。路径含空格要加引号。
 
@@ -61,7 +74,7 @@ python scripts/vb.py setup
 
 ### 3. 写文案
 
-在当前工作目录建 `vocab-video/<名字>.yaml`。**先读 @references/copywriting.md**，格式见 @references/script-format.md，可参考 `examples/sample.yaml`。
+在当前工作目录建 `vocab-video/<名字>.yaml`。**先读 @references/copywriting.md**，格式可参考 `examples/sample.yaml`（字段细节见 @references/script-format.md，需要时再读）。
 
 核心要求：
 
