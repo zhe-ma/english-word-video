@@ -1,7 +1,7 @@
 import React from "react";
 import { Easing, interpolate } from "remotion";
 import { px } from "./FitBox";
-import { ANNO, C, EN, TEXT, ZH } from "./theme";
+import { ANNO, C, EN, IPA_FONT, TEXT, ZH } from "./theme";
 import type { Item, Page, Token } from "./types";
 
 const CLAMP = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -60,13 +60,18 @@ const needsRoom = (tokens: Token[], i: number) => {
   return [...between].filter((ch) => ch.trim() && !LEADING_PUNCT.test(ch)).length <= 2;
 };
 
-/** 一行注释，落在统一行距里，不把这一行再撑高。 */
+/** 单词下方的注释：上一行音标，下一行词性 + 释义。落在统一行距里，不把这一行再撑高。 */
 const note = (opacity: number): React.CSSProperties => ({
-  position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)", marginTop: "0.14em",
-  width: "max-content", whiteSpace: "nowrap",
-  opacity, fontSize: `${TEXT.anno}em`, lineHeight: 1, fontWeight: 500, letterSpacing: 0,
+  position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)", marginTop: "0.1em",
+  width: "max-content", whiteSpace: "nowrap", textAlign: "center",
+  opacity, fontSize: `${TEXT.anno}em`, lineHeight: 1.15, fontWeight: 500, letterSpacing: 0,
   fontFamily: ZH, color: ANNO.gloss,
 });
+
+const ipaStyle: React.CSSProperties = {
+  display: "block", fontFamily: IPA_FONT, fontWeight: 500, fontSize: `${TEXT.ipa}em`, lineHeight: 1.1,
+  color: ANNO.ipa, marginBottom: "0.08em",
+};
 
 const WordView: React.FC<{ tk: Extract<Token, { i: number }>; item: Item; t: number | null; trailing: string; room?: boolean }> = ({
   tk, item, t, trailing, room,
@@ -83,8 +88,11 @@ const WordView: React.FC<{ tk: Extract<Token, { i: number }>; item: Item; t: num
           padding: C.word === "transparent" ? undefined : "0 0.06em",
           borderBottom: C.enLine || undefined }}>{tk.text}</span>
         <span style={note(g)}>
-          {pos ? <span style={{ fontFamily: EN, fontWeight: 600 }}>{pos} </span> : null}
-          {item.gloss}
+          {item.ipa ? <span style={ipaStyle}>{item.ipa}</span> : null}
+          <span style={{ display: "block" }}>
+            {pos ? <span style={{ fontFamily: EN, fontWeight: 600 }}>{pos} </span> : null}
+            {item.gloss}
+          </span>
         </span>
       </span>
       {trailing}

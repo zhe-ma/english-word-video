@@ -4,7 +4,7 @@ const POPPINS = `"Poppins", "Avenir Next", "Helvetica Neue", "Segoe UI", "Noto S
 const P = {
   bg: "#2A2724", card: "#F7F4EF", ink: "#333333", secondary: "#888888", tertiary: "#888888",
   word: "transparent", en: "#002FA7", enWeight: 700, enFont: POPPINS, enLine: "",
-  line: "rgba(0,0,0,0.05)", accent: "#002FA7", gloss: "#555555", pos: "#555555", ipa: "#666666",
+  line: "rgba(0,0,0,0.05)", accent: "#002FA7", gloss: "#555555", pos: "#555555", ipa: "#5E5E5E",
   title: "#F6F3EE", onBg: "#C9C4BC",
   radius: 28, shadow: "0 18px 48px rgba(0,0,0,0.28)",
 };
@@ -79,4 +79,4 @@ export const LAYOUT = {
  * lineHeight 是能放下下方注释的最小行距，lineHeightMax 是有空余时拉开的上限。
  * anno 为注释相对正文的字号比例。
  */
-export const TEXT = { size: 42, lineHeight: 2.45, lineHeightMax: 3.15, anno: 0.7, min: 0.68, max: 1.12 };
+export const TEXT = { size: 42, lineHeight: 3.3, lineHeightMax: 3.8, anno: 0.7, ipa: 0.92, min: 0.55, max: 1.12 };

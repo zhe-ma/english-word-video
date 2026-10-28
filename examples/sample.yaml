@@ -1,7 +1,7 @@
 # 示例文案：python scripts/vb.py check examples/sample.yaml
 defaults:
-  level: 雅思                  # 校验用：学习词不在该级别词表里会提醒
-  series: 雅思单词学习          # 画面左上角栏目名
+  level: CET-6                 # 可选。高考 / CET-4 / CET-6 / 考研 / 雅思 / 托福；不写 = 不限。用来校验选词，并作为默认栏目名「CET-6单词」
+  # series: 每日一词            # 可选。画面左上角栏目名，不写则自动
 
 episodes:
   - id: monday-1               # 输出目录名，只用字母、数字、短横线

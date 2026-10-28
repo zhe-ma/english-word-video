@@ -51,11 +51,12 @@ def is_ready():
 
 
 def template_sig():
+    """模板指纹：代码按内容算（等长修改也能发现），字体只看大小。"""
     h = hashlib.sha1()
     for p in sorted(TEMPLATE.rglob("*")):
         if p.is_file():
             h.update(p.relative_to(TEMPLATE).as_posix().encode())
-            h.update(str(p.stat().st_size).encode())
+            h.update(str(p.stat().st_size).encode() if p.suffix in (".woff2", ".txt") else p.read_bytes())
     return h.hexdigest()[:12]
 
 

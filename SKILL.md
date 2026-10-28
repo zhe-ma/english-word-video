@@ -2,16 +2,16 @@
 name: english-word-video
 display_name: 中英混读单词视频
 display_name_en: English Word Video Maker
-description: 把一段文字或一个主题做成竖屏「中英混读单词」短视频（1080x1920，含配音、高亮注释、词卡复习和封面）。当用户要求做单词视频、背单词短视频、中英混读视频、雅思/考研/四六级词汇视频、把文章或一段话做成学英语短视频，或给了主题让 AI 写文案并出视频时使用。
+description: 把一段文字或一个主题做成竖屏「中英混读单词」短视频（1080x1920，含配音、音标词性释义注释、词卡复习和封面）。词汇等级可选（高考、四六级、考研、雅思、托福或不限）。当用户要求做单词视频、背单词短视频、中英混读视频、把文章或一段话做成学英语短视频，或给了主题让 AI 写文案并出视频时使用。
 description_zh: 输入一段文字或主题，自动写成中英混读文案、配音并渲染成竖屏单词短视频和封面。
 description_en: Turn a passage or a topic into a vertical Chinese-English mixed-reading vocabulary video with voiceover, highlighted annotations, flashcard review and cover image.
 examples_zh:
-  - "把这段话做成一条雅思单词短视频：……"
-  - "帮我写一条吐槽周一通勤的单词视频，用雅思词汇"
+  - "把这段话做成一条单词短视频：……"
+  - "帮我写一条吐槽周一通勤的单词视频，用四级词汇"
   - "这篇文章太长了，拆成 3 期考研单词视频"
 examples_en:
-  - "Turn this paragraph into an IELTS vocabulary short video"
-  - "Write and render a funny Monday-commute vocabulary video"
+  - "Turn this paragraph into a vocabulary short video"
+  - "Write and render a funny Monday-commute vocabulary video at CET-4 level"
   - "Split this long article into 3 vocabulary episodes"
 version: 1.0.0
 author: 马哲
@@ -19,7 +19,7 @@ author: 马哲
 
 # 中英混读单词视频
 
-正文以中文叙述，5–7 个英文学习词原位嵌入句子，配音读到时高亮并在词下方显示「词性 + 释义」，结尾逐个复习词卡。输出 1080×1920 竖屏 mp4 和封面 png，约 40–70 秒。
+正文以中文叙述，5–7 个英文学习词原位嵌入句子，配音读到时高亮并在词下方显示「音标 + 词性 + 释义」，结尾逐个复习词卡。输出 1080×1920 竖屏 mp4 和封面 png，约 40–70 秒。
 
 你负责**写文案**，脚本负责**校验、配音、渲染**。脚本不会替你写稿，也不会翻译。
 
@@ -40,10 +40,16 @@ author: 马哲
 | 用户给了 | 你做 |
 |---|---|
 | 一段文字（文章、笔记、短文） | 以它为素材改写。内容只来自原文，不添加原文没有的信息。篇幅长就拆成多期 |
-| 只有主题 | 自己写一条有共鸣的短文案 |
+| 只有主题，或让 AI 自己想 | 自己写一条有共鸣的短文案 |
 | 已写好的 yaml | 跳到第 3 步 |
 
-缺少信息时才问，不要一上来盘问。默认值：词汇等级「雅思」，一期一条视频。需要确认的只有：用户是否指定了等级（高考 / CET-4 / CET-6 / 考研 / 雅思 / 托福）、栏目名（画面左上角）。
+**文案来源和词汇等级都由用户决定，不要替用户默认。** 用户没说明的才问，一次问完（可用提问工具给选项）：
+
+1. 文案来源：自己提供文字 / 给主题或方向让 AI 写 / 完全由 AI 自由发挥。
+2. 词汇等级：高考 / CET-4 / CET-6 / 考研 / 雅思 / 托福 / 不限。选了才在 yaml 里写 `level`，用来校验选词；选「不限」就不写。
+3. 栏目名（画面左上角，可选）：不写则自动用「<等级>单词」，没选等级则是「中英混读单词」。
+
+用户说「随便」「你定」时：等级不限、栏目名自动。不要把任何等级写进画面文字，除非用户选了。
 
 ### 2. 准备环境
 
@@ -61,7 +67,7 @@ python scripts/vb.py setup
 
 - 每期 3–6 段，全文约 150–200 个汉字，一屏手机放得下；5–7 个学习词。
 - 学习词写成 `英文 (词性. 释义)`，释义必须是被换掉的那个中文词。
-- 选词前可以用 `python scripts/vb.py words <英文或中文> --level 雅思` 核对词典义项和级别。
+- 选词前可以用 `python scripts/vb.py words <英文或中文> [--level <用户选的等级>]` 核对词典义项、音标和级别。
 
 ### 4. 校验
 

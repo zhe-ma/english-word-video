@@ -61,13 +61,23 @@ def find_words(query, level=None, limit=12):
     return rows
 
 
-IPA_FIX = str.maketrans({"'": "ˈ", ",": "ˌ", ".": "ˌ", ":": "ː", "ә": "ə", "g": "ɡ"})
+IPA_FIX = str.maketrans({"'": "ˈ", ",": "ˌ", ".": "ˌ", ":": "ː", "ә": "ə", "g": "ɡ", "ε": "ɛ", "є": "ɛ"})
+# 词库用的是金山风格的音标（i = ɪ，ei = eɪ，әu = əʊ）。只做有把握的规范化：复合元音，以及后面跟辅音的短 i。
+_DIPHTHONGS = [("ei", "eɪ"), ("ai", "aɪ"), ("ɔi", "ɔɪ"), ("au", "aʊ"), ("əu", "əʊ"), ("iə", "ɪə"), ("uə", "ʊə")]
+_SHORT_I = re.compile(r"i(?=[ˈˌ]?[^aeiouæɑɒɔəɛɜʌʊɪɚːˈˌ/\s]+)")
+
+
+def normalize_ipa(p):
+    p = p.translate(IPA_FIX)
+    for a, b in _DIPHTHONGS:
+        p = p.replace(a, b)
+    return _SHORT_I.sub("ɪ", p)
 
 
 def ipa(word):
     row = dict_row(word)
     p = (row["phonetic"] or "").strip() if row else ""
-    return f"/{p.translate(IPA_FIX)}/" if p else ""
+    return f"/{normalize_ipa(p)}/" if p else ""
 
 
 _POS_ALIAS = {"adj": "a", "a": "a", "n": "n", "v": "v", "vt": "v", "vi": "v", "adv": "adv"}
@@ -256,6 +266,8 @@ def normalize(raw, index, defaults):
         raise BatchError(f"第 {index} 条不是对象")
     ep = {k: raw.get(k, v) for k, v in defaults.items()}
     ep["id"] = SAFE_ID.sub("-", str(raw.get("id") or f"{index:02d}")).strip("-") or f"{index:02d}"
+    ep["level"] = str(ep["level"] or "").strip()
+    ep["series"] = str(ep["series"] or "").strip() or (f"{ep['level']}单词" if ep["level"] else "中英混读单词")
     ep["title"] = str(raw.get("title") or "").strip()
     cover = raw.get("cover") or ep["title"]
     ep["cover"] = [str(c) for c in cover] if isinstance(cover, list) else [str(cover)]
@@ -328,6 +340,8 @@ def check(ep):
         if re.search(r"[,.!?;:]", "".join(tk["t"] for tk in p["tokens"] if "t" in tk)):
             W(f"第 {n} 段有半角标点，中文请用全角")
 
+    if ep["level"] and ep["level"] not in LEVEL_TAGS:
+        W(f"level「{ep['level']}」不在 {' / '.join(LEVEL_TAGS)} 里，不做词表校验")
     tag = LEVEL_TAGS.get(ep["level"])
     if _db() is None:
         W("找不到词库 scripts/data/ecdict-lite.db，跳过词典检查")

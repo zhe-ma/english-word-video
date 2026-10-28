@@ -237,7 +237,7 @@ def main(argv=None):
 
     p = sub.add_parser("words", help="查词")
     p.add_argument("query", nargs="+", help="英文单词（精确，查不到按前缀）或中文释义关键词")
-    p.add_argument("--level", help="只看某级别词表：高考 / CET-4 / CET-6 / 考研 / 雅思 / 托福")
+    p.add_argument("--level", help="只看某级别词表：高考 / CET-4 / CET-6 / 考研 / 雅思 / 托福；不写则不限")
 
     for name in ("check", "stills", "build"):
         p = sub.add_parser(name)
