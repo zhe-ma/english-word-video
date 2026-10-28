@@ -2,25 +2,45 @@
 <html lang="zh">
 <meta charset="utf-8">
 <style>
-  /* 图标源文件：512x512。渲染方法见 README「图标」。字体复用模板里的内置字体。 */
+  /* 图标源文件：512x512。渲染方法见 README「图标」。字体复用模板里的内置字体。
+     画面元素 = skill 的核心画面：竖屏卡片上，中文里嵌着被荧光笔标出的英文词，下面是音标和词性释义；
+     底部声波 + 播放键 = 配音视频；后面叠一张卡 = 一期一期的系列。 */
   @font-face { font-family: "Noto Sans SC"; src: url("../templates/remotion/public/fonts/NotoSansSC.woff2"); font-weight: 400 700; }
   @font-face { font-family: "Poppins"; src: url("../templates/remotion/public/fonts/Poppins-Bold.woff2"); font-weight: 700; }
   html, body { margin: 0; width: 512px; height: 512px; overflow: hidden; }
-  .icon { position: relative; width: 512px; height: 512px; background: radial-gradient(circle at 30% 20%, #3C3733 0%, #2A2724 70%); }
-  .card { position: absolute; left: 76px; top: 84px; width: 360px; height: 344px; border-radius: 64px; background: #F7F4EF;
-          box-shadow: 0 22px 48px rgba(0,0,0,.38); }
-  .zh { position: absolute; left: 38px; top: 10px; font: 600 172px/1.1 "Noto Sans SC"; color: #333; }
-  .en { position: absolute; left: 40px; top: 192px; font: 700 84px/1 "Poppins"; color: #002FA7; letter-spacing: -2px; }
-  .note { position: absolute; left: 44px; top: 300px; height: 14px; border-radius: 7px; background: #CFCAC2; }
-  .play { position: absolute; left: 346px; top: 330px; width: 124px; height: 124px; border-radius: 62px; background: #002FA7;
-          box-shadow: 0 14px 30px rgba(0,0,0,.4), 0 0 0 10px #2A2724; }
-  .play::after { content: ""; position: absolute; left: 47px; top: 35px; border-left: 46px solid #fff; border-top: 27px solid transparent; border-bottom: 27px solid transparent; }
+  .icon { position: relative; width: 512px; height: 512px; overflow: hidden;
+          background: radial-gradient(120% 90% at 18% 8%, #5B86FF 0%, rgba(91,134,255,0) 55%),
+                      linear-gradient(150deg, #3A63F5 0%, #1B33D6 52%, #0F1E96 100%); }
+  .back { position: absolute; left: 150px; top: 60px; width: 268px; height: 392px; border-radius: 50px;
+          background: rgba(255,255,255,.26); transform: rotate(9deg); }
+  .card { position: absolute; left: 100px; top: 52px; width: 288px; height: 408px; border-radius: 52px; background: #fff;
+          transform: rotate(-5deg); box-shadow: 0 34px 60px rgba(7,14,92,.45), 0 4px 0 rgba(255,255,255,.6) inset; }
+  .zh { position: absolute; left: 34px; font: 600 70px/1 "Noto Sans SC"; color: #23262F; letter-spacing: 2px; }
+  .mark { position: absolute; left: 22px; top: 150px; width: 238px; height: 62px; border-radius: 14px; background: #FFD84A;
+          transform: rotate(-1.5deg); }
+  .en { position: absolute; left: 34px; top: 112px; font: 700 92px/1.1 "Poppins"; color: #1B33D6; letter-spacing: -2px; }
+  .ipa { position: absolute; left: 36px; top: 228px; font: 400 32px/1 "Lucida Grande", "Arial Unicode MS", "Segoe UI", "Helvetica Neue", sans-serif; color: #6B7080; }
+  .pos { position: absolute; left: 36px; top: 268px; font: 600 30px/1 "Noto Sans SC"; color: #3A3F4F; }
+  .pos b { font-family: "Poppins"; font-weight: 700; color: #1B33D6; margin-right: 8px; }
+  .wave { position: absolute; left: 36px; top: 332px; display: flex; align-items: center; gap: 9px; height: 52px; }
+  .wave i { display: block; width: 9px; border-radius: 5px; background: #1B33D6; }
+  .play { position: absolute; left: 350px; top: 346px; width: 118px; height: 118px; border-radius: 59px; background: #FFD84A;
+          box-shadow: 0 16px 30px rgba(6,12,80,.45), 0 0 0 9px rgba(255,255,255,.22); }
+  .play::after { content: ""; position: absolute; left: 44px; top: 32px; border-left: 40px solid #14207E;
+                 border-top: 27px solid transparent; border-bottom: 27px solid transparent; border-radius: 4px; }
 </style>
 <div class="icon">
+  <div class="back"></div>
   <div class="card">
-    <div class="zh">词</div>
+    <div class="zh" style="top:34px">背单词</div>
+    <div class="mark"></div>
     <div class="en">word</div>
-    <div class="note" style="width:150px"></div>
+    <div class="ipa">/wɜːd/</div>
+    <div class="pos"><b>n.</b>单词</div>
+    <div class="wave">
+      <i style="height:16px"></i><i style="height:30px"></i><i style="height:44px"></i><i style="height:26px"></i>
+      <i style="height:38px"></i><i style="height:20px"></i><i style="height:34px"></i><i style="height:14px"></i>
+    </div>
   </div>
   <div class="play"></div>
 </div>
