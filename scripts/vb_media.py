@@ -2,7 +2,7 @@
 import os
 import subprocess
 
-from .config import RUNTIME
+from vb_config import RUNTIME
 
 
 def ffmpeg_dir():

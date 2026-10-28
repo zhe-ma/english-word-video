@@ -12,10 +12,10 @@ import time
 
 import pyphen
 
-from . import media
-from .config import (CACHE, COLORS, EN_ZH_GAP, FPS, GROUP_LEAD, ITEM_GAP, LEAD_IN, OVERVIEW_HOLD, PAGE_GAP,
+import vb_media as media
+from vb_config import (CACHE, COLORS, EN_ZH_GAP, FPS, GROUP_LEAD, ITEM_GAP, LEAD_IN, OVERVIEW_HOLD, PAGE_GAP,
                      REVIEW_GAP, REVIEW_GROUP_MAX, SR)
-from .episode import PHRASE_POS, ipa, review_senses
+from vb_episode import PHRASE_POS, ipa, review_senses
 
 HANZI = re.compile(r"[\u4e00-\u9fff]")
 HYPH = pyphen.Pyphen(lang="en_US")

@@ -18,7 +18,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from .config import HOME, PYDEPS, REQUIREMENTS, RUNTIME, STAMP, TEMPLATE
+from vb_config import HOME, PYDEPS, REQUIREMENTS, RUNTIME, STAMP, TEMPLATE
 
 
 def say(msg):
@@ -100,18 +100,24 @@ def install_python_deps(upgrade):
          "-r", REQUIREMENTS])
 
 
+ROOT_FILES = ("package.json", "package-lock.json", "tsconfig.json", "render.mjs")
+
+
 def sync_template():
-    """skill 目录只读，渲染在用户目录里的副本中进行；node_modules 留在副本里。"""
+    """skill 目录只读且只能有两级目录，模板文件是平铺的。这里按类型还原成 Remotion 要的结构：
+    根目录放 package.json 等，src/ 放 .ts/.tsx/sample.json，public/fonts/ 放 .woff2。node_modules 留在副本里。"""
     say("同步渲染模板")
     RUNTIME.mkdir(parents=True, exist_ok=True)
-    for name in ("package.json", "package-lock.json", "tsconfig.json", "render.mjs"):
+    for name in ROOT_FILES:
         shutil.copy2(TEMPLATE / name, RUNTIME / name)
     shutil.rmtree(RUNTIME / "src", ignore_errors=True)
-    shutil.copytree(TEMPLATE / "src", RUNTIME / "src")
+    (RUNTIME / "src").mkdir()
     fonts = RUNTIME / "public" / "fonts"
     fonts.mkdir(parents=True, exist_ok=True)
-    for f in (TEMPLATE / "public" / "fonts").iterdir():
-        if not (fonts / f.name).exists() or not filecmp.cmp(f, fonts / f.name, shallow=True):
+    for f in sorted(TEMPLATE.iterdir()):
+        if f.suffix in (".ts", ".tsx") or f.name == "sample.json":
+            shutil.copy2(f, RUNTIME / "src" / f.name)
+        elif f.suffix == ".woff2" and (not (fonts / f.name).exists() or not filecmp.cmp(f, fonts / f.name, shallow=True)):
             shutil.copy2(f, fonts / f.name)
     print(f"→ {RUNTIME}")
 
@@ -135,7 +141,7 @@ def ensure_browser():
 
 def self_check():
     say("自检")
-    from . import media
+    import vb_media as media
     d, exe = media.ffmpeg_dir()
     r = subprocess.run([str(d / exe), "-version"], cwd=d, capture_output=True, text=True)
     if r.returncode != 0:

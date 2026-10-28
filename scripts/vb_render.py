@@ -1,23 +1,16 @@
-import hashlib
 import json
 import os
 import shutil
 import subprocess
 import tempfile
 
-from .config import PUBLIC_AUDIO, RUNTIME, TEMPLATE
+from vb_config import PUBLIC_AUDIO, RUNTIME
+from vb_setup import template_sig
 
 
 def template_hash():
-    """模板源码的哈希：模板变了就重新渲染。"""
-    h = hashlib.sha1()
-    for p in sorted((TEMPLATE / "src").rglob("*")):
-        if p.is_file():
-            h.update(p.relative_to(TEMPLATE).as_posix().encode())
-            h.update(p.read_bytes())
-    for p in sorted((TEMPLATE / "public" / "fonts").glob("*.woff2")):
-        h.update(p.name.encode())
-    return h.hexdigest()[:12]
+    """模板内容的哈希：模板变了就重新渲染。"""
+    return template_sig()
 
 
 def key_times(tl):

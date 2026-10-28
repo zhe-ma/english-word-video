@@ -74,7 +74,7 @@ python scripts/vb.py setup
 
 ### 3. 写文案
 
-在当前工作目录建 `vocab-video/<名字>.yaml`。**先读 @references/copywriting.md**，格式可参考 `examples/sample.yaml`（字段细节见 @references/script-format.md，需要时再读）。
+在当前工作目录建 `vocab-video/<名字>.yaml`。**先读 @references/copywriting.md**，格式可参考 `templates/example.yaml`（字段细节见 @references/script-format.md，需要时再读）。
 
 核心要求：
 
@@ -128,8 +128,9 @@ python scripts/vb.py build vocab-video/<名字>.yaml
 SKILL.md              本文件
 references/           写稿规范、文案格式与常见问题
 scripts/vb.py         唯一入口：setup / words / check / stills / build
-scripts/lib/          校验、配音、渲染逻辑
-scripts/data/         内置词库（ECDICT 精简版，MIT）
-templates/remotion/   画面模板（Remotion）与内置字体（OFL）
-examples/sample.yaml  示例文案
+scripts/vb_*.py       校验、配音、渲染逻辑
+scripts/ecdict-lite.db  内置词库（ECDICT 精简版，MIT）
+templates/            画面模板（Remotion 源码，平铺）、内置字体（OFL）、example.yaml 示例文案
+
+包内只有 references/、scripts/、templates/ 三个二级目录，没有更深的嵌套（开放平台限制）。
 ```

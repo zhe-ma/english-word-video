@@ -83,7 +83,7 @@ episodes:
 
 ## 词库来源与许可
 
-- 词典：ECDICT（skywind3000/ECDICT，MIT），已精简为 `scripts/data/ecdict-lite.db`。
-- 字体：Poppins、Noto Sans SC（SIL OFL 1.1，许可文件见 `templates/remotion/public/fonts/`），已裁剪为子集（中文只含 GB2312 一级常用字约 3700 个和常用标点，生僻字自动回退系统字体，Windows 为微软雅黑）。
+- 词典：ECDICT（skywind3000/ECDICT，MIT），已精简为 `scripts/ecdict-lite.db`。
+- 字体：Poppins、Noto Sans SC（SIL OFL 1.1，许可文件见 `templates/OFL-*.txt`），已裁剪为子集（中文只含 GB2312 一级常用字约 3700 个和常用标点，生僻字自动回退系统字体，Windows 为微软雅黑）。
 - 渲染：Remotion。公司或团队商用请先查阅 remotion.dev/license 的授权条款。
 - 配音：微软 Edge 在线语音（edge-tts），非官方接口，可用性可能随服务端变化。

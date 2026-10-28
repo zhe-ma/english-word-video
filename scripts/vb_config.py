@@ -6,9 +6,9 @@ import os
 import sys
 from pathlib import Path
 
-SKILL = Path(__file__).resolve().parents[2]
-TEMPLATE = SKILL / "templates" / "remotion"
-ECDICT_DB = SKILL / "scripts" / "data" / "ecdict-lite.db"
+SKILL = Path(__file__).resolve().parents[1]
+TEMPLATE = SKILL / "templates"                  # 平铺的模板文件；setup 时按类型还原成 Remotion 的目录结构
+ECDICT_DB = SKILL / "scripts" / "ecdict-lite.db"
 REQUIREMENTS = SKILL / "scripts" / "requirements.txt"
 
 HOME = Path(os.environ.get("EWV_HOME") or Path.home() / ".english-word-video")

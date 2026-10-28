@@ -10,8 +10,8 @@ from pathlib import Path
 
 import yaml
 
-from .config import (DEFAULTS, ECDICT_DB, HETERONYMS, ITEMS_RANGE, LEVEL_TAGS, MAX_GLOSS_LEN, MAX_TEXT_WEIGHT)
-from .errors import BatchError
+from vb_config import (DEFAULTS, ECDICT_DB, HETERONYMS, ITEMS_RANGE, LEVEL_TAGS, MAX_GLOSS_LEN, MAX_TEXT_WEIGHT)
+from vb_errors import BatchError
 
 HANZI = re.compile(r"[\u4e00-\u9fff]")
 EN_RUN = re.compile(r"[A-Za-z][A-Za-z'’-]*(?:\s+[A-Za-z][A-Za-z'’-]*)*")
@@ -344,7 +344,7 @@ def check(ep):
         W(f"level「{ep['level']}」不在 {' / '.join(LEVEL_TAGS)} 里，不做词表校验")
     tag = LEVEL_TAGS.get(ep["level"])
     if _db() is None:
-        W("找不到词库 scripts/data/ecdict-lite.db，跳过词典检查")
+        W("找不到词库 scripts/ecdict-lite.db，跳过词典检查")
     else:
         for it in ep["items"]:
             missing = [w for w in it["en"].split() if dict_row(w) is None]

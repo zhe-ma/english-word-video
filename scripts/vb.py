@@ -21,18 +21,21 @@ for _s in (sys.stdout, sys.stderr):
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")
 
-from lib.config import BODY_RANGE, PYDEPS, SR, TOTAL_RANGE  # noqa: E402  只用标准库，可在 setup 之前导入
-from lib.errors import BatchError  # noqa: E402
+from vb_config import BODY_RANGE, PYDEPS, SR, TOTAL_RANGE  # noqa: E402  只用标准库，可在 setup 之前导入
+from vb_errors import BatchError  # noqa: E402
 
 
 def libs():
     """依赖装在用户目录里；环境没准备好就提示先 setup。"""
-    from lib import setup
+    import vb_setup as setup
     if not setup.is_ready():
         print("环境还没准备好（或 skill 已更新），先运行：python scripts/vb.py setup")
         sys.exit(2)
     sys.path.insert(0, str(PYDEPS))
-    from lib import episode, media, render, tts
+    import vb_episode as episode
+    import vb_media as media
+    import vb_render as render
+    import vb_tts as tts
     return episode, media, render, tts
 
 
@@ -92,7 +95,7 @@ def write_review(root, path, eps, restore):
 # ---------- 命令 ----------
 
 def cmd_setup(args):
-    from lib import setup
+    import vb_setup as setup
     return setup.setup(upgrade=args.upgrade)
 
 
